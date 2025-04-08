@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 
 
-class BaseApi(ABC):
+class BaseHhHandler(ABC):
     """
-    абстрактный класс для работы с API
+    абстрактный класс для работы с API hh.ru
     """
 
     @abstractmethod
