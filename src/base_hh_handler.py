@@ -12,11 +12,6 @@ class BaseHhHandler(ABC):
         pass
 
     @abstractmethod
-    def api_connections(self):
-        """метод подключения к API"""
-        pass
-
-    @abstractmethod
     def get_vacancies(self, *args, **kwargs):
         """метод получения вакансий"""
         pass
