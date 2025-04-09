@@ -5,12 +5,6 @@ def user_interaction():
     pass
 
 
-def cast_vacancies_to_object_list(hh_vacancies) -> list[Vacancy]:
-    """Преобразование набора данных из JSON в список объектов"""
-    vacancies_list = []
-    return vacancies_list
-
-
 def filter_vacancies(vacancies, filter_words):
     """фильтрует список вакансий по поисковым словам"""
     pass

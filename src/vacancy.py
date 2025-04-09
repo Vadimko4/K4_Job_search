@@ -7,17 +7,17 @@ class Vacancy:
     название вакансии, ссылка на вакансию, зарплата, краткое описание или требования
     """
 
-    def __init__(self, vacancy_title, vacancy_link, salary_from, salary_to, vacancy_desription):
+    def __init__(self, vacancy_name, vacancy_link, salary_from, salary_to, vacancy_description):
         """конструктор вакансии"""
-        self.vacancy_title = vacancy_title
+        self.vacancy_name = vacancy_name
         self.vacancy_link = vacancy_link
         self.salary_from = salary_from
         self.salary_to = salary_to
-        self.vacancy_desription = vacancy_desription
+        self.vacancy_description = vacancy_description
 
     def __str__(self):
-        return (f"{self.vacancy_title}: зарплата от {self.salary_from}, до {self.salary_to}; "
-                f"{self.vacancy_desription}; {self.vacancy_link}")
+        return (f"{self.vacancy_name}: зарплата от {self.salary_from}, до {self.salary_to}; "
+                f"{self.vacancy_description}; {self.vacancy_link}")
 
     def __lt__(self, other):
         """
@@ -42,10 +42,30 @@ class Vacancy:
 
         return self_salary < other_salary
 
-    def __gt__(self, other):
-        """метод определяет больше self, чем other или нет"""
-        pass
+    @classmethod
+    def cast_vacancies_to_object_list(cls, dict_vacancies_list):
+        """Преобразование набора данных из JSON ответа в список объектов"""
+        instances = []
+        for vacancy in dict_vacancies_list:
+            name = vacancy['name']
+            link = vacancy['alternate_url']
+            if vacancy['salary']['from'] is None:
+                salary_from = 0
+            else:
+                salary_from = vacancy['salary']['from']
+            if vacancy['salary']['to'] is None:
+                salary_to = 0
+            else:
+                salary_to = vacancy['salary']['to']
+            description = vacancy['snippet']['requirement']
+            instance = cls(name, link, salary_from, salary_to, description)
+            instances.append(instance)
+        return instances
 
-    def __eq__(self, other):
-        """метод определяет равны ли self и other между собой"""
-        pass
+    # def __gt__(self, other):
+    #     """метод определяет больше self, чем other или нет"""
+    #     pass
+    #
+    # def __eq__(self, other):
+    #     """метод определяет равны ли self и other между собой"""
+    #     pass

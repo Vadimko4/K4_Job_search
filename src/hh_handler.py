@@ -14,7 +14,7 @@ class HhHandler(BaseHhHandler):
         """конструктор класса"""
         self.url = 'https://api.hh.ru/vacancies'
         self.headers = {'User-Agent': 'HH-User-Agent'}
-        self.params = {'text': '', 'page': 0, 'per_page': 200}
+        self.params = {'text': '', 'page': 0, 'per_page': 100}
         self.vacancies = []
         super().__init__(file_handler)
 
