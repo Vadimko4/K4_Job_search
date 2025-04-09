@@ -17,6 +17,6 @@ class BaseHhHandler(ABC):
         pass
 
     @abstractmethod
-    def get_vacancies(self):
+    def get_vacancies(self, *args, **kwargs):
         """метод получения вакансий"""
         pass
