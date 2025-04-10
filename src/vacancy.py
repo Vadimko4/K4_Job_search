@@ -13,7 +13,13 @@ class Vacancy:
         self.vacancy_link = vacancy_link
         self.salary_from = salary_from
         self.salary_to = salary_to
-        self.vacancy_description = vacancy_description
+        self.vacancy_description = self.__validate_description(vacancy_description)
+
+    def __validate_description(self, text):
+        if text:
+            return text
+        else:
+            return "описание не указано"
 
     def __str__(self):
         if not self.salary_from:
