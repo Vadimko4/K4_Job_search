@@ -16,7 +16,16 @@ class Vacancy:
         self.vacancy_description = vacancy_description
 
     def __str__(self):
-        return (f"{self.vacancy_name}: зарплата от {self.salary_from}, до {self.salary_to}; "
+        if not self.salary_from:
+            salary_from_string = "- не указана"
+        else:
+            salary_from_string = str(self.salary_from)
+        if not self.salary_to:
+            salary_to_string = "- не указана"
+        else:
+            salary_to_string = str(self.salary_to)
+
+        return (f"{self.vacancy_name}: зарплата от {salary_from_string}, до {salary_to_string}; "
                 f"{self.vacancy_description}; {self.vacancy_link}")
 
     def __lt__(self, other):
@@ -49,14 +58,19 @@ class Vacancy:
         for vacancy in dict_vacancies_list:
             name = vacancy['name']
             link = vacancy['alternate_url']
-            if vacancy['salary']['from'] is None:
+            salary_info = vacancy['salary']
+            if not salary_info:
                 salary_from = 0
-            else:
-                salary_from = vacancy['salary']['from']
-            if vacancy['salary']['to'] is None:
                 salary_to = 0
             else:
-                salary_to = vacancy['salary']['to']
+                if vacancy['salary']['from'] is None:
+                    salary_from = 0
+                else:
+                    salary_from = vacancy['salary']['from']
+                if vacancy['salary']['to'] is None:
+                    salary_to = 0
+                else:
+                    salary_to = vacancy['salary']['to']
             description = vacancy['snippet']['requirement']
             instance = cls(name, link, salary_from, salary_to, description)
             instances.append(instance)
