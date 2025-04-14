@@ -24,10 +24,15 @@ class JSONSaver(BaseFileHandler):
         with open(self.__file_name, 'a', encoding='utf-8') as file:
             json.dump(add_data, file)
 
-    def clear_filedata(self):
-        """очищаем файл"""
-        file = open(self.__file_name, 'w', encoding='utf-8')
-        file.close()
+    def delete_filedata(self, vacancy):
+        """удаляем вакансию из файла, если она там есть"""
+        dict_vacancy = vacancy.vacancy_to_dict()
+        vacancies = self.read_filedata()
+        if dict_vacancy in vacancies:
+            vacancies.remove(dict_vacancy)
+
+        with open(self.__file_name, 'w', encoding='utf-8') as file:
+            json.dump(vacancies, file)
 
     def add_vacancy(self, new_vacancy):
         """добавляем новую вакансию в файл, но только в том случае, если её там нет"""

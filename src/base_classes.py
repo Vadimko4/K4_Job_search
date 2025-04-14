@@ -38,6 +38,6 @@ class BaseFileHandler(ABC):
         pass
 
     @abstractmethod
-    def clear_filedata(self):
+    def delete_filedata(self, *args, **kwargs):
         """метод удаления данных из файла"""
         pass
