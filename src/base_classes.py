@@ -33,7 +33,7 @@ class BaseFileHandler(ABC):
         pass
 
     @abstractmethod
-    def append_filedata(self):
+    def append_filedata(self, *args, **kwargs):
         """метод добавления данных в файл"""
         pass
 
