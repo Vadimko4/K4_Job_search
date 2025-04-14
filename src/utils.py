@@ -1,8 +1,6 @@
 from src.vacancy import Vacancy
 
-
-def user_interaction():
-    pass
+VACANCY_PER_PAGE_OUT = 5
 
 
 def filter_vacancies(vacancies: list[Vacancy], filter_words):
@@ -37,5 +35,11 @@ def get_top_vacancies(vacancies, top_amount):
 
 def print_vacancies(vacancies):
     """выводит список вакансий в удобном для чтения виде"""
+    cnt = 0
     for vac in vacancies:
         print(vac)
+        cnt += 1
+        if cnt % VACANCY_PER_PAGE_OUT == 0:
+            user_input = input("<q> - возврат в главное меню, остальное - продолжить вывод: ").lower()
+            if user_input == 'q':
+                return

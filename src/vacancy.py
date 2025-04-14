@@ -33,7 +33,7 @@ class Vacancy:
         else:
             salary_string = "не указана"
 
-        return (f"{'*' * 50}\nВакансия: {self.vacancy_name} \nЗарплата: {salary_string}\n"
+        return (f"{'-' * 150}\nВакансия: {self.vacancy_name} \nЗарплата: {salary_string}\n"
                 f"Описание: {self.vacancy_description}\nСсылка на вакансию: {self.vacancy_link}")
 
     def __lt__(self, other):

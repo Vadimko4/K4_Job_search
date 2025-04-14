@@ -10,13 +10,13 @@ class HhHandler(BaseHhHandler):
     Класс для работы с API HeadHunter
     """
 
-    def __init__(self, file_handler):
+    def __init__(self):
         """конструктор класса"""
         self.url = 'https://api.hh.ru/vacancies'
         self.headers = {'User-Agent': 'HH-User-Agent'}
         self.params = {'text': '', 'page': 0, 'per_page': 100}
         self.vacancies = []
-        super().__init__(file_handler)
+        # super().__init__(file_handler)
 
     def get_vacancies(self, search_query):
         """Получение вакансий, содержащих search_query, с hh.ru в формате JSON"""
