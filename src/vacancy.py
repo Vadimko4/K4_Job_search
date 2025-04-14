@@ -24,17 +24,17 @@ class Vacancy:
             return "описание не указано"
 
     def __str__(self):
-        if not self.salary_from:
-            salary_from_string = "- не указана"
+        if self.salary_from and self.salary_to:
+            salary_string = f'от {str(self.salary_from)} - до {str(self.salary_to)} рублей'
+        elif self.salary_from:
+            salary_string = f'от {str(self.salary_from)} рублей'
+        elif self.salary_to:
+            salary_string = f'до {str(self.salary_to)} рублей'
         else:
-            salary_from_string = str(self.salary_from)
-        if not self.salary_to:
-            salary_to_string = "- не указана"
-        else:
-            salary_to_string = str(self.salary_to)
+            salary_string = "не указана"
 
-        return (f"{self.vacancy_name}: зарплата от {salary_from_string}, до {salary_to_string}; "
-                f"{self.vacancy_description}; {self.vacancy_link}")
+        return (f"{'*' * 50}\nВакансия: {self.vacancy_name} \nЗарплата: {salary_string}\n"
+                f"Описание: {self.vacancy_description}\nСсылка на вакансию: {self.vacancy_link}")
 
     def __lt__(self, other):
         """
@@ -80,6 +80,7 @@ class Vacancy:
                 else:
                     salary_to = vacancy['salary']['to']
             description = vacancy['snippet']['requirement']
+            #  Создаём объект Вакансия
             instance = cls(name, link, salary_from, salary_to, description)
             instances.append(instance)
         return instances

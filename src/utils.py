@@ -31,7 +31,8 @@ def sort_vacancies(vacancies):
 
 def get_top_vacancies(vacancies, top_amount):
     """возвращает топ n вакансий"""
-    # get_top_vacancies()
+    top_vacancies = vacancies[:top_amount]
+    return top_vacancies
 
 
 def print_vacancies(vacancies):
