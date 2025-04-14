@@ -2,7 +2,7 @@
 
 import requests
 
-from src.base_hh_handler import BaseHhHandler
+from src.base_classes import BaseHhHandler
 
 
 class HhHandler(BaseHhHandler):
