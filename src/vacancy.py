@@ -7,6 +7,8 @@ class Vacancy:
     название вакансии, ссылка на вакансию, зарплата, краткое описание или требования
     """
 
+    __slots__ = ('vacancy_name', 'salary_from', 'salary_to', 'vacancy_description', 'vacancy_link')
+
     def __init__(self, vacancy_name, vacancy_link, salary_from, salary_to, vacancy_description):
         """конструктор вакансии"""
         self.vacancy_name = vacancy_name
@@ -81,6 +83,16 @@ class Vacancy:
             instance = cls(name, link, salary_from, salary_to, description)
             instances.append(instance)
         return instances
+
+    def vacancy_to_dict(self):
+        """возвращает вакансию в виде словаря"""
+        vacancy_dict = dict()
+        vacancy_dict['vacancy_name'] = self.vacancy_name
+        vacancy_dict['salary_from'] = self.salary_from
+        vacancy_dict['salary_to'] = self.salary_to
+        vacancy_dict['vacancy_description'] = self.vacancy_description
+        vacancy_dict['vacancy_link'] = self.vacancy_link
+        return vacancy_dict
 
     # def __gt__(self, other):
     #     """метод определяет больше self, чем other или нет"""
