@@ -28,16 +28,21 @@ class BaseFileHandler(ABC):
         pass
 
     @abstractmethod
-    def read_filedata(self):
-        """метод получения данных из файла"""
+    def read_vacancies(self):
+        """считывает вакансии из файла"""
         pass
 
     @abstractmethod
-    def append_filedata(self, *args, **kwargs):
-        """метод добавления данных в файл"""
+    def add_vacancy(self, *args, **kwargs):
+        """добавляет вакансию в файл"""
         pass
 
     @abstractmethod
-    def delete_filedata(self, *args, **kwargs):
-        """метод удаления данных из файла"""
+    def add_vacancies(self, *args, **kwargs):
+        """добавляет вакансии в файл"""
+        pass
+
+    @abstractmethod
+    def delete_vacancy(self, *args, **kwargs):
+        """удаляет вакансию из файла"""
         pass
