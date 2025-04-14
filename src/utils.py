@@ -5,14 +5,23 @@ def user_interaction():
     pass
 
 
-def filter_vacancies(vacancies, filter_words):
-    """фильтрует список вакансий по поисковым словам"""
-    pass
+def filter_vacancies(vacancies: list[Vacancy], filter_words):
+    """фильтрует список вакансий по поисковым словам - список строк"""
+    filtered_vacancies = [vac for vac in vacancies if any(word in vac.vacancy_description for word in filter_words)]
+    return filtered_vacancies
 
 
-def get_vacancies_by_salary(vacancies, salary_range):
-    """фильтрует вакансии по зарплатам"""
-    pass
+def get_vacancies_by_salary(vacancies: list[Vacancy], salary_range):
+    """
+    фильтрует вакансии по зарплатам
+    salary_range - список из двух целых чисел: зарплата от и зарплата до
+    если хотя бы одно из них попадает в диапазон зарплат, указанный в вакансии от и до,
+    то вакансия попадает в выдачу
+    """
+    filtered_vacancies = [vac for vac in vacancies
+                          if any(amount in range(vac.salary_to, vac.salary_from + 1)
+                                 for amount in salary_range)]
+    return filtered_vacancies
 
 
 def sort_vacancies(vacancies):
@@ -20,9 +29,9 @@ def sort_vacancies(vacancies):
     return sorted(vacancies, reverse=True)
 
 
-def get_top_vacancies(vacancies, top_n):
+def get_top_vacancies(vacancies, top_amount):
     """возвращает топ n вакансий"""
-    pass
+    # get_top_vacancies()
 
 
 def print_vacancies(vacancies):
