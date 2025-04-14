@@ -9,11 +9,6 @@ class BaseHhHandler(ABC):
     """
 
     @abstractmethod
-    def __init__(self, *args, **kwargs):
-        """конструктор"""
-        pass
-
-    @abstractmethod
     def get_vacancies(self, *args, **kwargs):
         """метод получения вакансий"""
         pass
@@ -21,11 +16,6 @@ class BaseHhHandler(ABC):
 
 class BaseFileHandler(ABC):
     """абстрактный класс для работы с файлами"""
-
-    @abstractmethod
-    def __init__(self, *args, **kwargs):
-        """конструктор"""
-        pass
 
     @abstractmethod
     def read_vacancies(self):
@@ -45,4 +35,9 @@ class BaseFileHandler(ABC):
     @abstractmethod
     def delete_vacancy(self, *args, **kwargs):
         """удаляет вакансию из файла"""
+        pass
+
+    @abstractmethod
+    def select_from_vacancies(self, *args, **kwargs):
+        """делает выборку вакансий из файла"""
         pass

@@ -19,11 +19,6 @@ class JSONSaver(BaseFileHandler):
         with open(self.__file_name, encoding='utf-8') as file:
             return json.load(file)
 
-    def append_filedata(self, add_data: list[dict]):
-        """дописываем данные в json файл"""
-        with open(self.__file_name, 'a', encoding='utf-8') as file:
-            json.dump(add_data, file)
-
     def delete_vacancy(self, vacancy):
         """удаляем вакансию из файла, если она там есть"""
         dict_vacancy = vacancy.vacancy_to_dict()
@@ -61,3 +56,16 @@ class JSONSaver(BaseFileHandler):
 
         with open(self.__file_name, 'a', encoding='utf-8') as file:
             json.dump(old_vacancies, file)
+
+    def select_from_vacancies(self, salary_range, filter_words) -> list[dict]:
+        """
+        делает выборку вакансий из файла по указанному диапазону зарплаты (список из двух целых значений: от и до)
+        и по указанным ключевым словам (список строк), которые должны присутствовать (хотя бы одно из них)
+        в описании вакансии
+        """
+        vacancies_list = self.read_vacancies()
+        selected_vacancies = [vac for vac in vacancies_list
+                              if any(word in vac['description'] for word in filter_words)
+                              and (salary_range[0] in range(vac['salary_from'], vac['salary_to'] + 1) or
+                                   salary_range[1] in range(vac['salary_from'], vac['salary_to'] + 1))]
+        return selected_vacancies

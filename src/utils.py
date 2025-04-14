@@ -27,4 +27,5 @@ def get_top_vacancies(vacancies, top_n):
 
 def print_vacancies(vacancies):
     """выводит список вакансий в удобном для чтения виде"""
-    pass
+    for vac in vacancies:
+        print(vac)
