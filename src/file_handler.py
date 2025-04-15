@@ -1,4 +1,4 @@
-"""модуль для класса, работающего с файлами"""
+"""Модуль для класса, работающего с файлами"""
 import json
 import os
 
@@ -9,28 +9,28 @@ DEFAULT_VACANCY_JSON_FILE_NAME = os.path.join(PATH_TO_DATA_DIR, "vacancy.json")
 
 
 class JSONSaver(BaseFileHandler):
-    """класс для работы с файлами вакансий - считывания, записи"""
+    """Класс для работы с файлами вакансий - считывания, записи"""
 
     def __init__(self, file_name=DEFAULT_VACANCY_JSON_FILE_NAME):
-        """конструктор"""
+        """Конструктор"""
         self.__file_name = file_name
 
     def __eq__(self, other):
-        """метод определяет равны ли self и other между собой"""
+        """Метод определяет равны ли self и other между собой"""
         return self.__file_name == other.__file_name
 
     @property
     def is_empty(self):
-        """возвращает - пустой ли файл"""
+        """Возвращает - пустой ли файл"""
         return os.path.getsize(self.__file_name) == 0
 
     def read_vacancies(self) -> list[dict]:
-        """считывает и возвращает данные - список словарей с вакансиями из json файла"""
+        """Считывает и возвращает данные - список словарей с вакансиями из json файла"""
         with open(self.__file_name, encoding='utf-8') as file:
             return json.load(file)
 
     def delete_vacancy(self, vacancy):
-        """удаляем вакансию из файла, если она там есть"""
+        """Удаляем вакансию из файла, если она там есть"""
         dict_vacancy = vacancy.vacancy_to_dict()
         vacancies = self.read_vacancies()
         if dict_vacancy in vacancies:
@@ -40,12 +40,12 @@ class JSONSaver(BaseFileHandler):
             json.dump(vacancies, file)
 
     def rewrite_vacancy(self, new_vacancies):
-        """перезаписывает вакансии в файл - старые стирает"""
+        """Перезаписывает вакансии в файл - старые стирает"""
         with open(self.__file_name, 'w', encoding='utf-8') as file:
             json.dump(new_vacancies, file)
 
     def add_vacancy(self, new_vacancy):
-        """добавляем новую вакансию в файл, но только в том случае, если её там нет"""
+        """Добавляем новую вакансию в файл, но только в том случае, если её там нет"""
         old_vacancies = self.read_vacancies()
         new_vacancy_data = new_vacancy.vacancy_to_dict()
 
@@ -59,7 +59,7 @@ class JSONSaver(BaseFileHandler):
             json.dump(old_vacancies, file)
 
     def add_vacancies(self, new_vacancies_list):
-        """добавляем в файл новые вакансии, только те, которых в файле нет - без дублей"""
+        """Добавляем в файл новые вакансии, только те, которых в файле нет - без дублей"""
         #  переводим список объектов-вакансий в список словарей
         new_vacancies_dict_list = [vac.vacancy_to_dict() for vac in new_vacancies_list]
 
@@ -74,7 +74,7 @@ class JSONSaver(BaseFileHandler):
 
     def select_from_vacancies(self, salary_range, filter_words) -> list[dict]:
         """
-        делает выборку вакансий из файла по указанному диапазону зарплаты (список из двух целых значений: от и до)
+        Делает выборку вакансий из файла по указанному диапазону зарплаты (список из двух целых значений: от и до)
         и по указанным ключевым словам (список строк), которые должны присутствовать (хотя бы одно из них)
         в описании вакансии
         """

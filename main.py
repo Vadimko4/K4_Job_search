@@ -8,6 +8,7 @@ from src.utils import (print_vacancies, get_vacancies_by_salary, sort_vacancies_
 
 
 def user_menu_out():
+    """Функция выводит главное меню программы"""
     print("\nВыберите дальнейшее действие")
     print("""\n1. Фильтрация по зарплате
 2. Фильтрация по ключевым словам в описании
@@ -21,6 +22,7 @@ def user_menu_out():
 
 
 def user_file_menu_out():
+    """Функция выводит меню для работы с файлами"""
     print("\nВыберите дальнейшее действие")
     print("""\n1. Записать текущие вакансии в файл
 2. Загрузить вакансии из файла
@@ -89,7 +91,7 @@ def foolproof_user_top_amount_input(n_max: int) -> int:
 
 def create_new_file_object(old_file_object) -> JSONSaver:
     """
-    функция инициирует создание нового файлового объекта класса JSONSaver
+    Функция инициирует создание нового файлового объекта класса JSONSaver
     запрашивает у пользователя имя нового файла предлагает варианты
     если файл с таким именем уже существует, спрашивает перезаписать его или изменить имя
     """
@@ -125,6 +127,15 @@ def create_new_file_object(old_file_object) -> JSONSaver:
             quit_flag = True
 
     return new_file_object
+
+
+def create_open_file_object() -> JSONSaver:
+    """
+    Функция делает попытку открыть существующий файл и создать связанный с ним объект класса JSONSaver
+    выводит список существующих файлов
+    если существующих файлов нет, то возвращает None
+    """
+
 
 
 def file_user_menu(vacancies: list[Vacancy], file_object: JSONSaver = None) -> tuple:
@@ -216,11 +227,11 @@ def file_user_menu(vacancies: list[Vacancy], file_object: JSONSaver = None) -> t
 
 
 def user_interaction():
-    # Создание экземпляра класса для работы с json-файлом с вакансиями
-    # json_saver = JSONSaver()
-    # Создание экземпляра класса для работы с API сайтов с вакансиями
+    """Основная функция реализует интерфейс пользователя и программы"""
     is_file_open = False
+    #  В самом начале никакой файл не открыт и объекта класса JSONSaver не существует
     file_object = None
+    # Создание экземпляра класса для работы с API сайтов с вакансиями
     hh_api = HhHandler()
 
     # platforms = ["HeadHunter"]

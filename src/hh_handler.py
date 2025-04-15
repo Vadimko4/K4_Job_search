@@ -1,4 +1,4 @@
-"""модуль с классом для работы с API HH"""
+"""Модуль с классом для работы с API HH"""
 
 import requests
 
@@ -11,7 +11,7 @@ class HhHandler(BaseHhHandler):
     """
 
     def __init__(self):
-        """конструктор класса"""
+        """Конструктор класса"""
         self.url = 'https://api.hh.ru/vacancies'
         self.headers = {'User-Agent': 'HH-User-Agent'}
         self.params = {'text': '', 'page': 0, 'per_page': 100}
@@ -28,6 +28,6 @@ class HhHandler(BaseHhHandler):
             self.params['page'] += 1
 
     def erase_old_vacancies(self):
-        """стирает ранее найденные вакансии для нового поиска"""
+        """Стирает ранее найденные вакансии для нового поиска"""
         self.vacancies = []
         self.params['page'] = 0

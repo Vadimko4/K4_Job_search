@@ -1,48 +1,48 @@
-"""модуль с абстрактными классами"""
+"""Модуль с абстрактными классами"""
 
 from abc import ABC, abstractmethod
 
 
 class BaseHhHandler(ABC):
     """
-    абстрактный класс для работы с API hh.ru
+    Абстрактный класс для работы с API hh.ru
     """
 
     @abstractmethod
     def get_vacancies(self, *args, **kwargs):
-        """метод получения вакансий"""
+        """Метод получения вакансий"""
         pass
 
 
 class BaseFileHandler(ABC):
-    """абстрактный класс для работы с файлами"""
+    """Абстрактный класс для работы с файлами"""
 
     @abstractmethod
     def read_vacancies(self):
-        """считывает вакансии из файла"""
+        """Считывает вакансии из файла"""
         pass
 
     @abstractmethod
     def add_vacancy(self, *args, **kwargs):
-        """добавляет вакансию в файл"""
+        """Добавляет вакансию в файл"""
         pass
 
     @abstractmethod
     def add_vacancies(self, *args, **kwargs):
-        """добавляет вакансии в файл"""
+        """Добавляет вакансии в файл"""
         pass
 
     @abstractmethod
     def rewrite_vacancy(self,  *args, **kwargs):
-        """перезаписывает вакансии в файл - старые стирает"""
+        """Перезаписывает вакансии в файл - старые стирает"""
         pass
 
     @abstractmethod
     def delete_vacancy(self, *args, **kwargs):
-        """удаляет вакансию из файла"""
+        """Удаляет вакансию из файла"""
         pass
 
     @abstractmethod
     def select_from_vacancies(self, *args, **kwargs):
-        """делает выборку вакансий из файла"""
+        """Делает выборку вакансий из файла"""
         pass

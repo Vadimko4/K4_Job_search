@@ -1,29 +1,29 @@
-"""модуль для класса, работающего с вакансиями"""
+"""Модуль для класса, работающего с вакансиями"""
 
 
 class Vacancy:
     """
-    класс, определяющий вакансии
+    Класс, определяющий вакансии
     название вакансии, ссылка на вакансию, зарплата, краткое описание или требования
     """
 
     __slots__ = ('vacancy_name', 'salary_from', 'salary_to', 'vacancy_description', 'vacancy_link')
 
     def __init__(self, vacancy_name, vacancy_link, salary_from, salary_to, vacancy_description):
-        """конструктор вакансии"""
+        """Конструктор вакансии"""
         self.vacancy_name = vacancy_name
         self.vacancy_link = vacancy_link
         self.salary_from = salary_from
         self.salary_to = salary_to
         self.vacancy_description = self.__validate_description(vacancy_description)
 
-    def __validate_description(self, text):
+    def __validate_description(self, text: str) -> str:
         if text:
             return text
         else:
             return "описание не указано"
 
-    def __str__(self):
+    def __str__(self) -> str:
         if self.salary_from and self.salary_to:
             salary_string = f'от {str(self.salary_from)} - до {str(self.salary_to)} рублей'
         elif self.salary_from:
@@ -38,7 +38,7 @@ class Vacancy:
 
     def __lt__(self, other):
         """
-        метод определяет меньше self, чем other или нет
+        Метод определяет меньше self, чем other или нет
         сравнение производится по актуальной зарплате:
         если есть и нижний и верхний пределы, то это их среднее арифметическое
         если есть только одно из значений, то это оно
@@ -60,7 +60,7 @@ class Vacancy:
         return self_salary < other_salary
 
     @classmethod
-    def cast_vacancies_to_object_list(cls, dict_vacancies_list):
+    def cast_vacancies_to_object_list(cls, dict_vacancies_list: list[dict]) -> list:
         """Преобразование набора данных из JSON ответа в список объектов"""
         instances = []
         for vacancy in dict_vacancies_list:
@@ -85,8 +85,8 @@ class Vacancy:
             instances.append(instance)
         return instances
 
-    def vacancy_to_dict(self):
-        """возвращает вакансию в виде словаря"""
+    def vacancy_to_dict(self) -> dict:
+        """Возвращает вакансию в виде словаря"""
         vacancy_dict = dict()
         vacancy_dict['vacancy_name'] = self.vacancy_name
         vacancy_dict['salary_from'] = self.salary_from

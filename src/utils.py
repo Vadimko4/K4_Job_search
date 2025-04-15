@@ -4,15 +4,15 @@ VACANCY_PER_PAGE_OUT = 5
 
 
 def filter_vacancies_by_words(vacancies: list[Vacancy], filter_words: list[str]) -> list[Vacancy]:
-    """фильтрует список вакансий по поисковым словам - список строк"""
+    """Фильтрует список вакансий по поисковым словам - список строк"""
     filtered_vacancies = [vac for vac in vacancies
                           if any(word in vac.vacancy_description.lower() for word in filter_words)]
     return filtered_vacancies
 
 
-def get_vacancies_by_salary(vacancies: list[Vacancy], salary_range):
+def get_vacancies_by_salary(vacancies: list[Vacancy], salary_range: tuple) -> list[Vacancy]:
     """
-    фильтрует вакансии по зарплатам
+    Фильтрует вакансии по зарплатам
     salary_range - список из двух целых чисел: зарплата от и зарплата до
     если хотя бы одно из них попадает в диапазон зарплат, указанный в вакансии от и до,
     то вакансия попадает в выдачу
@@ -23,19 +23,19 @@ def get_vacancies_by_salary(vacancies: list[Vacancy], salary_range):
     return filtered_vacancies
 
 
-def sort_vacancies_by_salary_decrease(vacancies):
-    """сортирует вакансии по убыванию актуальной зарплаты"""
+def sort_vacancies_by_salary_decrease(vacancies: list[Vacancy]) -> list[Vacancy]:
+    """Сортирует вакансии по убыванию актуальной зарплаты"""
     return sorted(vacancies, reverse=True)
 
 
-def get_top_vacancies(vacancies, top_amount):
-    """возвращает топ n вакансий"""
+def get_top_vacancies(vacancies: list[Vacancy], top_amount: int) -> list[Vacancy]:
+    """Возвращает топ n вакансий"""
     top_vacancies = vacancies[:top_amount]
     return top_vacancies
 
 
-def print_vacancies(vacancies):
-    """выводит список вакансий в удобном для чтения виде"""
+def print_vacancies(vacancies: list[Vacancy]) -> None:
+    """Выводит список вакансий в удобном для чтения виде"""
     cnt = 0
     for vac in vacancies:
         print(vac)
