@@ -26,3 +26,8 @@ class HhHandler(BaseHhHandler):
             vacancies = response.json()['items']
             self.vacancies.extend(vacancies)
             self.params['page'] += 1
+
+    def erase_old_vacancies(self):
+        """стирает ранее найденные вакансии для нового поиска"""
+        self.vacancies = []
+        self.params['page'] = 0

@@ -1,7 +1,8 @@
 from src.file_handler import JSONSaver
 from src.hh_handler import HhHandler
 from src.vacancy import Vacancy
-from src.utils import print_vacancies, get_vacancies_by_salary, sort_vacancies
+from src.utils import (print_vacancies, get_vacancies_by_salary, sort_vacancies_by_salary_decrease,
+                       filter_vacancies_by_words, get_top_vacancies)
 
 
 def user_menu_out():
@@ -13,7 +14,8 @@ def user_menu_out():
 5. Действия с файлом
 6. Сбросить все фильтры
 7. Новый поиск
-8. Выход из программы""")
+8. Ещё раз показать главное меню
+9. Выход из программы""")
 
 
 def foolproof_user_menu_input() -> str:
@@ -22,17 +24,15 @@ def foolproof_user_menu_input() -> str:
     """
     while True:
         user_answer = input('\nПользователь: ')
-        if len(user_answer) != 1 or user_answer not in '12345678':
-            print("\nПрограмма: Неверный ввод, вам нужно ввести цифру от 1 - до 8 \nПопробуйте ещё раз")
+        if len(user_answer) != 1 or user_answer not in '123456789':
+            print("\nПрограмма: Неверный ввод, вам нужно ввести цифру от 1 - до 9 \nПопробуйте ещё раз")
         else:
             break
     return user_answer
 
 
 def foolproof_user_salary_input():
-    """
-        Ввод пользователя уровня зарплаты для фильтрации вакансий
-        """
+    """Ввод пользователя уровня зарплаты для фильтрации вакансий"""
     while True:
         print("\nПрограмма: введите интересующий уровень зарплаты в одном из форматов: \n"
               "<100000 - 500000> = от 100.000 руб до 500.000 руб \n"
@@ -57,6 +57,24 @@ def foolproof_user_salary_input():
                 salary_to = 10**8
             break
     return salary_from, salary_to
+
+
+def foolproof_user_top_amount_input(n_max: int) -> int:
+    """Функция ввода количества вакансий для вывода ТОП вакансий по зарплате"""
+    print(f"\nПрограмма: введите количество вакансий в ТОП: число от 1 до {n_max}")
+    while True:
+        try:
+            user_answer = int(input('Пользователь: '))
+            if user_answer not in range(1, n_max + 1):
+                raise ValueError
+        except ValueError:
+            print(f"\nПрограмма: Неверный ввод, вам нужно ввести число от 1 до {n_max} \nПопробуйте ещё раз")
+        except Exception:
+            print(f"\nПрограмма: Неверный ввод, вам нужно ввести число  \nПопробуйте ещё раз")
+        else:
+            break
+    return user_answer
+
 
 # Получение вакансий с hh.ru в формате JSON
 # hh_vacancies = hh_api.get_vacancies("Python")
@@ -97,12 +115,18 @@ def user_interaction():
         if user_input == '1':
             salary_from, salary_to = foolproof_user_salary_input()
             vacancies = get_vacancies_by_salary(vacancies, (salary_from, salary_to))
-            vacancies = sort_vacancies(vacancies)
+            vacancies = sort_vacancies_by_salary_decrease(vacancies)
 
         if user_input == '2':
-            pass
+            print("\nПрограмма: через пробел введите ключевые слова для поиска в описании вакансии")
+            user_answer = input('Пользователь: ').lower()
+            filter_words = user_answer.split()
+            vacancies = filter_vacancies_by_words(vacancies, filter_words)
         if user_input == '3':
-            pass
+            top_amount = foolproof_user_top_amount_input(len(vacancies))
+            vacancies = sort_vacancies_by_salary_decrease(vacancies)
+            top_vacancies = get_top_vacancies(vacancies, top_amount)
+            print_vacancies(top_vacancies)
         if user_input == '4':
             print_vacancies(vacancies)
         if user_input == '5':
@@ -110,11 +134,17 @@ def user_interaction():
         if user_input == '6':
             vacancies = Vacancy.cast_vacancies_to_object_list(hh_api.vacancies)
         if user_input == '7':
-            pass
+            hh_api.erase_old_vacancies()
+            search_query = input("\nПрограмма: Введите ключевое слово для поиска вакансий. \n\nПользователь: ")
+            print("\nПрограмма: подождите, идёт сбор данных...")
+            hh_api.get_vacancies(search_query)
+            vacancies = Vacancy.cast_vacancies_to_object_list(hh_api.vacancies)
+            print("\nДанные с www.hh.ru успешно получены")
         if user_input == '8':
+            user_menu_out()
+        if user_input == '9':
             print("Программа: Всего доброго!")
             exit()
-
 
 
     # top_n = int(input("Введите количество вакансий для вывода в топ N: "))

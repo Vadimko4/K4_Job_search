@@ -3,9 +3,10 @@ from src.vacancy import Vacancy
 VACANCY_PER_PAGE_OUT = 5
 
 
-def filter_vacancies(vacancies: list[Vacancy], filter_words):
+def filter_vacancies_by_words(vacancies: list[Vacancy], filter_words: list[str]) -> list[Vacancy]:
     """фильтрует список вакансий по поисковым словам - список строк"""
-    filtered_vacancies = [vac for vac in vacancies if any(word in vac.vacancy_description for word in filter_words)]
+    filtered_vacancies = [vac for vac in vacancies
+                          if any(word in vac.vacancy_description.lower() for word in filter_words)]
     return filtered_vacancies
 
 
@@ -22,7 +23,7 @@ def get_vacancies_by_salary(vacancies: list[Vacancy], salary_range):
     return filtered_vacancies
 
 
-def sort_vacancies(vacancies):
+def sort_vacancies_by_salary_decrease(vacancies):
     """сортирует вакансии по убыванию актуальной зарплаты"""
     return sorted(vacancies, reverse=True)
 
