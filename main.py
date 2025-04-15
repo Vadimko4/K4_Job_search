@@ -90,7 +90,7 @@ def foolproof_user_top_amount_input(n_max: int) -> int:
     return user_answer
 
 
-def create_new_file_object(old_file_object) -> JSONSaver:
+def create_new_file_object(old_file_object=None) -> JSONSaver:
     """
     Функция инициирует создание нового файлового объекта класса JSONSaver
     запрашивает у пользователя имя нового файла предлагает варианты
@@ -105,17 +105,19 @@ def create_new_file_object(old_file_object) -> JSONSaver:
     quit_flag = False
 
     while not quit_flag:
-        print(f"\nПрограмма: введите имя нового файла. \n"
-              f"Можете в нём использовать текущую дату: {day}_{month}_{year}"
+        print(f"\nПрограмма: введите имя нового файла (без расширения имени). \n"
+              f"Можете в нём использовать текущую дату: {day}_{month}_{year}\n"
               f"При нажатии ENTER - будет использовано по умолчанию имя vacancy.json")
         file_name = input("\nПользователь: ")
         if not file_name:
             new_file_name = DEFAULT_VACANCY_JSON_FILE_NAME
         else:
+            if file_name[-5:] != '.json':
+                file_name = file_name + '.json'
             new_file_name = os.path.join(PATH_TO_DATA_DIR, file_name)
         #  Проверяем, есть ли файл с таким именем
         try:  # файл с таким именем уже существует
-            with open(new_file_name) as file:
+            with open(new_file_name, 'r', encoding='utf-8') as file:
                 pass
             print(f"\nПрограмма: файл с таким именем уже существует\n"
                   f"0 - вернуться в меню действий с файлом\n"
@@ -124,6 +126,8 @@ def create_new_file_object(old_file_object) -> JSONSaver:
             if user_answer == '0':  # новый файловый объект не создаётся, возвращаемся в меню файл
                 quit_flag = True
         except FileNotFoundError:  # файла с таким именем нет, создаём и выходим
+            with open(new_file_name, 'w', encoding='utf-8'):
+                pass
             new_file_object = JSONSaver(new_file_name)
             quit_flag = True
 
@@ -189,6 +193,7 @@ def file_user_menu(vacancies: list[Vacancy], file_object: JSONSaver = None) -> t
 
                     if user_input_1 == '1':  # записать данные в новый файл
                         create_file_object = create_new_file_object(new_file_object)
+
                         if create_file_object != new_file_object:
                             new_file_object = create_file_object
                             new_file_object.add_vacancies(new_vacancies)
@@ -202,8 +207,8 @@ def file_user_menu(vacancies: list[Vacancy], file_object: JSONSaver = None) -> t
                         new_file_object.add_vacancies(new_vacancies)
                         print("\nПрограмма: новые вакансии успешно добавлены в файл\n")
 
-            else:  # если файл ещё не открыт, то надо открыть старый или создать новый
-                print("\nПрограмма: в настоящий момент нет открытого файла. Что вы хотите:\n"
+            else:  # если файл ещё не открыт, то надо открыть существующий или создать новый
+                print("\nПрограмма: в настоящий момент нет открытого файла. Что вы хотите:\n\n"
                       "0 - вернуться в файловое меню\n"
                       "1 - создать новый файл\n"
                       "2 - открыть существующий файл и записать новые данные поверх старых\n"
@@ -211,11 +216,12 @@ def file_user_menu(vacancies: list[Vacancy], file_object: JSONSaver = None) -> t
                 user_input_1 = foolproof_user_menu_input(list('0123'))
 
                 if user_input_1 == '1':  # создать новый файл
-                    create_file_object = create_new_file_object(new_file_object)
+                    create_file_object = create_new_file_object()
+
                     if create_file_object is not None:
                         new_file_object = create_file_object
-                        new_file_object.add_vacancies(new_vacancies)
-                        print("\nПрограмма: новые вакансии успешно добавлены в новый файл\n")
+                        new_file_object.rewrite_vacancy(new_vacancies)
+                        print("\nПрограмма: новые вакансии успешно добавлены в новый файл")
                     else:
                         print("\nПрограмма: не удалось создать файл, вакансии не добавлены, попробуйте ещё раз\n")
 

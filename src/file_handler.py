@@ -3,6 +3,7 @@ import json
 import os
 
 from src.base_classes import BaseFileHandler
+from src.vacancy import Vacancy
 
 PATH_TO_DATA_DIR = os.path.join(os.path.dirname(__file__), '..', "data")
 DEFAULT_VACANCY_JSON_FILE_NAME = os.path.join(PATH_TO_DATA_DIR, "vacancy.json")
@@ -39,10 +40,11 @@ class JSONSaver(BaseFileHandler):
         with open(self.__file_name, 'w', encoding='utf-8') as file:
             json.dump(vacancies, file)
 
-    def rewrite_vacancy(self, new_vacancies):
+    def rewrite_vacancy(self, new_vacancies: list[Vacancy]):
         """Перезаписывает вакансии в файл - старые стирает"""
+        new_vacancies_dict_list = [vac.vacancy_to_dict() for vac in new_vacancies]
         with open(self.__file_name, 'w', encoding='utf-8') as file:
-            json.dump(new_vacancies, file)
+            json.dump(new_vacancies_dict_list, file)
 
     def add_vacancy(self, new_vacancy):
         """Добавляем новую вакансию в файл, но только в том случае, если её там нет"""
@@ -50,7 +52,7 @@ class JSONSaver(BaseFileHandler):
         new_vacancy_data = new_vacancy.vacancy_to_dict()
 
         for vac in old_vacancies:
-            if new_vacancy_data['vacancy_link'] == vac['alternate_url']:
+            if new_vacancy_data['vacancy_link'] == vac['vacancy_link']:
                 return
 
         old_vacancies.append(new_vacancy_data)
@@ -58,7 +60,7 @@ class JSONSaver(BaseFileHandler):
         with open(self.__file_name, 'a', encoding='utf-8') as file:
             json.dump(old_vacancies, file)
 
-    def add_vacancies(self, new_vacancies_list):
+    def add_vacancies(self, new_vacancies_list: list[Vacancy]):
         """Добавляем в файл новые вакансии, только те, которых в файле нет - без дублей"""
         #  переводим список объектов-вакансий в список словарей
         new_vacancies_dict_list = [vac.vacancy_to_dict() for vac in new_vacancies_list]
@@ -66,7 +68,7 @@ class JSONSaver(BaseFileHandler):
         old_vacancies = self.read_vacancies()
 
         for new_vac in new_vacancies_dict_list:
-            if all(new_vac['vacancy_link'] != old_vac['alternate_url'] for old_vac in old_vacancies):
+            if all(new_vac['vacancy_link'] != old_vac['vacancy_link'] for old_vac in old_vacancies):
                 old_vacancies.append(new_vac)
 
         with open(self.__file_name, 'a', encoding='utf-8') as file:
@@ -87,11 +89,7 @@ class JSONSaver(BaseFileHandler):
 
 
 if __name__ == '__main__':
-    files = os.listdir('.')
-    print(files[1])
-    # Выводим только файлы
-    files_count = 0
-    for item in files:
-        if os.path.isfile(item):
-            files_count += 1
-            print(f"{files_count}: {item}")
+    a = JSONSaver()
+    print(a)
+    b = a
+    print(b, a)
