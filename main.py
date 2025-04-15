@@ -18,14 +18,23 @@ def user_menu_out():
 9. Выход из программы""")
 
 
-def foolproof_user_menu_input() -> str:
+def user_file_menu_out():
+    print("\nВыберите дальнейшее действие")
+    print("""\n1. Записать текущие вакансии в файл
+2. Загрузить вакансии из файла
+3. Вернуться в главное меню""")
+
+
+def foolproof_user_menu_input(menu_range_input: str) -> str:
     """
-    Функция выбора пользователя пункта главного меню - цифры от 1 до 8
+    Функция выбора пользователя пункта меню - принимает от пользователя только
+    цифры, которые содержатся в menu_range_input
     """
     while True:
         user_answer = input('\nПользователь: ')
-        if len(user_answer) != 1 or user_answer not in '123456789':
-            print("\nПрограмма: Неверный ввод, вам нужно ввести цифру от 1 - до 9 \nПопробуйте ещё раз")
+        if len(user_answer) != 1 or user_answer not in menu_range_input:
+            print(f"\nПрограмма: Неверный ввод, вам нужно ввести цифру от {menu_range_input[0]} "
+                  f"до {menu_range_input[-1]} \nПопробуйте ещё раз")
         else:
             break
     return user_answer
@@ -76,14 +85,66 @@ def foolproof_user_top_amount_input(n_max: int) -> int:
     return user_answer
 
 
+def file_user_menu(vacancies: list[Vacancy], file_object: JSONSaver = None) -> tuple:
+    """
+    Функция обеспечивает исполнение файлового меню пользователя
+    Здесь пользователь может:
+    1 - Записать текущие данные в файл
+    (если в настоящий момент файл не выбран, то программа предлагает открыть существующий файл - для добавления
+    информации, либо перезаписи, или же создать новый файл
+    если файл выбран, то предлагает создать новый файл, добавить данные в старый или же перезаписать его)
+    2 - Загрузить данные о вакансиях из файла
+    3 - Вернуться в главное меню
+    """
+    new_vacancies = vacancies
+    new_file_object = file_object
+    file_quit_flag = False
+
+    while not file_quit_flag:
+        user_file_menu_out()
+        user_input = foolproof_user_menu_input('123')
+
+        if user_input == '1': #  Записать текущие данные в файл
+            if new_file_object is not None: #  если файл уже открыт
+                if new_file_object.is_empty: #  и если он пустой
+                    new_file_object.add_vacancies(new_vacancies)
+                else: #  если он не пустой
+
+                    print("\nПрограмма: текущий файл не пустой. Выберите вариант действий:\n"
+                          "0 - вернуться в файловое меню\n"
+                          "1 - записать данные в новый файл\n"
+                          "2 - записать новые данные поверх старых\n"
+                          "3 - дописать новые данные")
+                    user_input_1 = foolproof_user_menu_input('0123')
+
+                    if user_input_1 == '1':
+
+                    elif user_input_1 == '2':
+                        new_file_object.rewrite_vacancy(new_vacancies)
+                    elif user_input_1 == '3':
+                        new_file_object.add_vacancies(new_vacancies)
+
+            else: #  если файл ещё не открыт, то надо открыть старый или создать новый
+                print("\nПрограмма: в настоящий момент нет открытого файла. Что вы хотите:\n"
+                      "0 - вернуться в файловое меню\n"
+                      "1 - создать новый файл\n"
+                      "2 - открыть существующий файл и записать новые данные поверх старых\n"
+                      "3 - открыть существующий файл и дописать новые данные")
+
+        if user_input == '2': #  Загрузить данные о вакансиях из файла
+
+        if user_input == '3': #  Вернуться в главное меню
+            file_quit_flag = True
+
+    return new_vacancies, new_file_object
+
+
+
 # Получение вакансий с hh.ru в формате JSON
 # hh_vacancies = hh_api.get_vacancies("Python")
 #
 # # Преобразование набора данных из JSON в список объектов
 # vacancies_list = Vacancy.cast_to_object_list(hh_vacancies)
-#
-# # Пример работы контструктора класса с одной вакансией
-# vacancy = Vacancy("Python Developer", "<https://hh.ru/vacancy/123456>", "100 000-150 000 руб.", "Требования: опыт работы от 3 лет...")
 #
 # # Сохранение информации о вакансиях в файл
 # json_saver = JSONSaver()
@@ -97,6 +158,8 @@ def user_interaction():
     # Создание экземпляра класса для работы с json-файлом с вакансиями
     # json_saver = JSONSaver()
     # Создание экземпляра класса для работы с API сайтов с вакансиями
+    is_file_open = False
+    file_object = None
     hh_api = HhHandler()
 
     # platforms = ["HeadHunter"]
@@ -104,6 +167,7 @@ def user_interaction():
     print("\nПрограмма: подождите, идёт сбор данных...")
     hh_api.get_vacancies(search_query)
     vacancies = Vacancy.cast_vacancies_to_object_list(hh_api.vacancies)
+    primary_vacancies = vacancies
     print("\nДанные с www.hh.ru успешно получены")
 
     quit_flag = False
@@ -111,53 +175,47 @@ def user_interaction():
         print(f"\nПрограмма: В настоящий момент в списке {len(vacancies)} вакансий.")
         user_menu_out()
 
-        user_input = foolproof_user_menu_input()
-        if user_input == '1':
+        user_input = foolproof_user_menu_input('123456789')
+        if user_input == '1': #  Фильтрация по зарплате
             salary_from, salary_to = foolproof_user_salary_input()
             vacancies = get_vacancies_by_salary(vacancies, (salary_from, salary_to))
             vacancies = sort_vacancies_by_salary_decrease(vacancies)
 
-        if user_input == '2':
+        if user_input == '2': #  Фильтрация по ключевым словам в описании
             print("\nПрограмма: через пробел введите ключевые слова для поиска в описании вакансии")
             user_answer = input('Пользователь: ').lower()
             filter_words = user_answer.split()
             vacancies = filter_vacancies_by_words(vacancies, filter_words)
-        if user_input == '3':
+
+        if user_input == '3': #  Вывести ТОП найденных вакансий по зарплате
             top_amount = foolproof_user_top_amount_input(len(vacancies))
             vacancies = sort_vacancies_by_salary_decrease(vacancies)
             top_vacancies = get_top_vacancies(vacancies, top_amount)
             print_vacancies(top_vacancies)
-        if user_input == '4':
+
+        if user_input == '4': #  Вывести все вакансии
             print_vacancies(vacancies)
-        if user_input == '5':
-            pass
-        if user_input == '6':
-            vacancies = Vacancy.cast_vacancies_to_object_list(hh_api.vacancies)
-        if user_input == '7':
+
+        if user_input == '5': #  Действия с файлом
+            vacancies, file_object = file_user_menu(vacancies, file_object)
+
+        if user_input == '6': #  Сбросить все фильтры
+            vacancies = primary_vacancies
+
+        if user_input == '7': #  Новый поиск
             hh_api.erase_old_vacancies()
             search_query = input("\nПрограмма: Введите ключевое слово для поиска вакансий. \n\nПользователь: ")
             print("\nПрограмма: подождите, идёт сбор данных...")
             hh_api.get_vacancies(search_query)
             vacancies = Vacancy.cast_vacancies_to_object_list(hh_api.vacancies)
             print("\nДанные с www.hh.ru успешно получены")
-        if user_input == '8':
+
+        if user_input == '8': #  Ещё раз показать главное меню
             user_menu_out()
-        if user_input == '9':
-            print("Программа: Всего доброго!")
-            exit()
 
-
-    # top_n = int(input("Введите количество вакансий для вывода в топ N: "))
-    # filter_words = input("Введите ключевые слова для фильтрации вакансий: ").split()
-    # salary_range = input("Введите диапазон зарплат: ") # Пример: 100000 - 150000
-    #
-    # filtered_vacancies = filter_vacancies(vacancies_list, filter_words)
-    #
-    # ranged_vacancies = get_vacancies_by_salary(filtered_vacancies, salary_range)
-    #
-    # sorted_vacancies = sort_vacancies(ranged_vacancies)
-    # top_vacancies = get_top_vacancies(sorted_vacancies, top_n)
-    # print_vacancies(top_vacancies)
+        if user_input == '9': #  Выход из программы
+            print("\nПрограмма: Всего доброго!")
+            quit_flag = True
 
 
 if __name__ == "__main__":

@@ -14,6 +14,11 @@ class JSONSaver(BaseFileHandler):
         """конструктор"""
         self.__file_name = file_name
 
+    @property
+    def is_empty(self):
+        """возвращает - пустой ли файл"""
+        return os.path.getsize(self.__file_name) == 0
+
     def read_vacancies(self) -> list[dict]:
         """считывает и возвращает данные - список словарей с вакансиями из json файла"""
         with open(self.__file_name, encoding='utf-8') as file:
@@ -28,6 +33,11 @@ class JSONSaver(BaseFileHandler):
 
         with open(self.__file_name, 'w', encoding='utf-8') as file:
             json.dump(vacancies, file)
+
+    def rewrite_vacancy(self, new_vacancies):
+        """перезаписывает вакансии в файл - старые стирает"""
+        with open(self.__file_name, 'w', encoding='utf-8') as file:
+            json.dump(new_vacancies, file)
 
     def add_vacancy(self, new_vacancy):
         """добавляем новую вакансию в файл, но только в том случае, если её там нет"""

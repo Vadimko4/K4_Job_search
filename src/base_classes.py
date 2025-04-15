@@ -33,6 +33,10 @@ class BaseFileHandler(ABC):
         pass
 
     @abstractmethod
+    def rewrite_vacancy(self,  *args, **kwargs):
+        """перезаписывает вакансии в файл - старые стирает"""
+
+    @abstractmethod
     def delete_vacancy(self, *args, **kwargs):
         """удаляет вакансию из файла"""
         pass
