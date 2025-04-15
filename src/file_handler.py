@@ -84,3 +84,14 @@ class JSONSaver(BaseFileHandler):
                               and (salary_range[0] in range(vac['salary_from'], vac['salary_to'] + 1) or
                                    salary_range[1] in range(vac['salary_from'], vac['salary_to'] + 1))]
         return selected_vacancies
+
+
+if __name__ == '__main__':
+    files = os.listdir('.')
+    print(files[1])
+    # Выводим только файлы
+    files_count = 0
+    for item in files:
+        if os.path.isfile(item):
+            files_count += 1
+            print(f"{files_count}: {item}")
