@@ -35,6 +35,7 @@ class BaseFileHandler(ABC):
     @abstractmethod
     def rewrite_vacancy(self,  *args, **kwargs):
         """перезаписывает вакансии в файл - старые стирает"""
+        pass
 
     @abstractmethod
     def delete_vacancy(self, *args, **kwargs):

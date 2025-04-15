@@ -1,4 +1,6 @@
-from src.file_handler import JSONSaver
+import os
+import datetime
+from src.file_handler import JSONSaver, DEFAULT_VACANCY_JSON_FILE_NAME, PATH_TO_DATA_DIR
 from src.hh_handler import HhHandler
 from src.vacancy import Vacancy
 from src.utils import (print_vacancies, get_vacancies_by_salary, sort_vacancies_by_salary_decrease,
@@ -85,6 +87,46 @@ def foolproof_user_top_amount_input(n_max: int) -> int:
     return user_answer
 
 
+def create_new_file_object(old_file_object) -> JSONSaver:
+    """
+    функция инициирует создание нового файлового объекта класса JSONSaver
+    запрашивает у пользователя имя нового файла предлагает варианты
+    если файл с таким именем уже существует, спрашивает перезаписать его или изменить имя
+    """
+    today = datetime.datetime.today()
+    day = today.day
+    month = today.month
+    year = today.year
+
+    new_file_object = old_file_object
+    quit_flag = False
+
+    while not quit_flag:
+        print(f"\nПрограмма: введите имя нового файла. \n"
+              f"Можете в нём использовать текущую дату: {day}_{month}_{year}"
+              f"При нажатии ENTER - будет использовано по умолчанию имя vacancy.json")
+        file_name = input("\nПользователь: ")
+        if not file_name:
+            new_file_name = DEFAULT_VACANCY_JSON_FILE_NAME
+        else:
+            new_file_name = os.path.join(PATH_TO_DATA_DIR, file_name)
+        #  Проверяем, есть ли файл с таким именем
+        try: #  файл с таким именем уже существует
+            with open(new_file_name) as file:
+                pass
+            print(f"\nПрограмма: файл с таким именем уже существует\n"
+                  f"0 - вернуться в меню действий с файлом\n"
+                  f"1 - ввести другое имя файла")
+            user_answer = foolproof_user_menu_input('01')
+            if user_answer == '0': #  новый файловый объект не создаётся, возвращаемся в меню файл
+                quit_flag = True
+        except FileNotFoundError: #  файла с таким именем нет, создаём и выходим
+            new_file_object = JSONSaver(new_file_name)
+            quit_flag = True
+
+    return new_file_object
+
+
 def file_user_menu(vacancies: list[Vacancy], file_object: JSONSaver = None) -> tuple:
     """
     Функция обеспечивает исполнение файлового меню пользователя
@@ -108,8 +150,8 @@ def file_user_menu(vacancies: list[Vacancy], file_object: JSONSaver = None) -> t
             if new_file_object is not None: #  если файл уже открыт
                 if new_file_object.is_empty: #  и если он пустой
                     new_file_object.add_vacancies(new_vacancies)
+                    print("\nПрограмма: новые вакансии успешно добавлены в файл\n")
                 else: #  если он не пустой
-
                     print("\nПрограмма: текущий файл не пустой. Выберите вариант действий:\n"
                           "0 - вернуться в файловое меню\n"
                           "1 - записать данные в новый файл\n"
@@ -117,12 +159,20 @@ def file_user_menu(vacancies: list[Vacancy], file_object: JSONSaver = None) -> t
                           "3 - дописать новые данные")
                     user_input_1 = foolproof_user_menu_input('0123')
 
-                    if user_input_1 == '1':
-
-                    elif user_input_1 == '2':
+                    if user_input_1 == '1': #  записать данные в новый файл
+                        create_file_object = create_new_file_object(new_file_object)
+                        if create_file_object != new_file_object:
+                            new_file_object = create_file_object
+                            new_file_object.add_vacancies(new_vacancies)
+                            print("\nПрограмма: новые вакансии успешно добавлены в новый файл\n")
+                        else:
+                            print("\nПрограмма: вакансии не добавлены в файл, попробуйте ещё раз\n")
+                    elif user_input_1 == '2': #  записать новые данные поверх старых
                         new_file_object.rewrite_vacancy(new_vacancies)
-                    elif user_input_1 == '3':
+                        print("\nПрограмма: новые вакансии успешно добавлены в файл поверх старых\n")
+                    elif user_input_1 == '3': #  дописать новые данные
                         new_file_object.add_vacancies(new_vacancies)
+                        print("\nПрограмма: новые вакансии успешно добавлены в файл\n")
 
             else: #  если файл ещё не открыт, то надо открыть старый или создать новый
                 print("\nПрограмма: в настоящий момент нет открытого файла. Что вы хотите:\n"
@@ -130,6 +180,17 @@ def file_user_menu(vacancies: list[Vacancy], file_object: JSONSaver = None) -> t
                       "1 - создать новый файл\n"
                       "2 - открыть существующий файл и записать новые данные поверх старых\n"
                       "3 - открыть существующий файл и дописать новые данные")
+                user_input_1 = foolproof_user_menu_input('0123')
+                if user_input_1 == '1': #  создать новый файл
+                    create_file_object = create_new_file_object(new_file_object)
+                    if create_file_object is not None:
+                        new_file_object = create_file_object
+                        new_file_object.add_vacancies(new_vacancies)
+                        print("\nПрограмма: новые вакансии успешно добавлены в новый файл\n")
+                    else:
+                        print("\nПрограмма: не удалось создать файл, вакансии не добавлены, попробуйте ещё раз\n")
+                if user_input_1 == '2': #  открыть существующий файл
+                    open_file_object = create_open_file_object()
 
         if user_input == '2': #  Загрузить данные о вакансиях из файла
 

@@ -4,15 +4,20 @@ import os
 
 from src.base_classes import BaseFileHandler
 
-PATH_TO_VACANCY_JSON_FILE = os.path.join(os.path.dirname(__file__), '..', "data", "vacancy.json")
+PATH_TO_DATA_DIR = os.path.join(os.path.dirname(__file__), '..', "data")
+DEFAULT_VACANCY_JSON_FILE_NAME = os.path.join(PATH_TO_DATA_DIR, "vacancy.json")
 
 
 class JSONSaver(BaseFileHandler):
     """класс для работы с файлами вакансий - считывания, записи"""
 
-    def __init__(self, file_name=PATH_TO_VACANCY_JSON_FILE):
+    def __init__(self, file_name=DEFAULT_VACANCY_JSON_FILE_NAME):
         """конструктор"""
         self.__file_name = file_name
+
+    def __eq__(self, other):
+        """метод определяет равны ли self и other между собой"""
+        return self.__file_name == other.__file_name
 
     @property
     def is_empty(self):
