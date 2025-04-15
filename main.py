@@ -121,8 +121,10 @@ def create_new_file_object(old_file_object=None) -> JSONSaver:
                 pass
             print(f"\nПрограмма: файл с таким именем уже существует\n"
                   f"0 - вернуться в меню действий с файлом\n"
-                  f"1 - ввести другое имя файла")
-            user_answer = foolproof_user_menu_input(list('01'))
+                  f"1 - ввести другое имя файла\n"
+                  f"2 - перезаписать данные поверх\n"
+                  f"3 - добавить данные в файл")
+            user_answer = foolproof_user_menu_input(list('0123'))
             if user_answer == '0':  # новый файловый объект не создаётся, возвращаемся в меню файл
                 quit_flag = True
         except FileNotFoundError:  # файла с таким именем нет, создаём и выходим
@@ -141,19 +143,21 @@ def create_open_file_object() -> Any:
     если существующих файлов нет, то возвращает None
     """
     # Получаем список файлов и папок в текущей директории
-    files = os.listdir('.')
+    files = os.listdir(PATH_TO_DATA_DIR)
 
     # Выводим только файлы
+    print("\nПрограмма: читаю список файлов\n")
     files_list = []
     for item in files:
-        if os.path.isfile(item):
+        full_path = os.path.join(PATH_TO_DATA_DIR, item)  # Формируем полный путь
+        if os.path.isfile(full_path):
             files_list.append(item)
             print(f"{len(files_list)}: {item}")
     if not files_list:
         print("\nПрограмма: в директории нет файлов\n")
         return None
     else:
-        print("\nПрограмма: введите номер файла, который нужно открыть\n")
+        print("\nПрограмма: введите номер файла, который нужно открыть")
         user_answer = foolproof_user_menu_input(list(map(str, range(1, len(files_list) + 1))))
         full_file_name = os.path.join(PATH_TO_DATA_DIR, files_list[int(user_answer) - 1])
         return JSONSaver(full_file_name)
@@ -182,7 +186,7 @@ def file_user_menu(vacancies: list[Vacancy], file_object: JSONSaver = None) -> t
             if new_file_object is not None:  # если файл уже открыт
                 if new_file_object.is_empty:  # и если он пустой
                     new_file_object.add_vacancies(new_vacancies)
-                    print("\nПрограмма: новые вакансии успешно добавлены в файл\n")
+                    print("\nПрограмма: новые вакансии успешно добавлены в файл")
                 else:  # если он не пустой
                     print("\nПрограмма: текущий файл не пустой. Выберите вариант действий:\n"
                           "0 - вернуться в файловое меню\n"
@@ -196,16 +200,16 @@ def file_user_menu(vacancies: list[Vacancy], file_object: JSONSaver = None) -> t
 
                         if create_file_object != new_file_object:
                             new_file_object = create_file_object
-                            new_file_object.add_vacancies(new_vacancies)
-                            print("\nПрограмма: новые вакансии успешно добавлены в новый файл\n")
+                            new_file_object.rewrite_vacancy(new_vacancies)
+                            print("\nПрограмма: новые вакансии успешно добавлены в новый файл")
                         else:
-                            print("\nПрограмма: вакансии не добавлены в файл, попробуйте ещё раз\n")
+                            print("\nПрограмма: вакансии не добавлены в файл, попробуйте ещё раз")
                     elif user_input_1 == '2':  # записать новые данные поверх старых
                         new_file_object.rewrite_vacancy(new_vacancies)
-                        print("\nПрограмма: новые вакансии успешно добавлены в файл поверх старых\n")
+                        print("\nПрограмма: новые вакансии успешно добавлены в файл поверх старых")
                     elif user_input_1 == '3':  # дописать новые данные
                         new_file_object.add_vacancies(new_vacancies)
-                        print("\nПрограмма: новые вакансии успешно добавлены в файл\n")
+                        print("\nПрограмма: новые вакансии успешно добавлены в файл")
 
             else:  # если файл ещё не открыт, то надо открыть существующий или создать новый
                 print("\nПрограмма: в настоящий момент нет открытого файла. Что вы хотите:\n\n"
@@ -223,35 +227,35 @@ def file_user_menu(vacancies: list[Vacancy], file_object: JSONSaver = None) -> t
                         new_file_object.rewrite_vacancy(new_vacancies)
                         print("\nПрограмма: новые вакансии успешно добавлены в новый файл")
                     else:
-                        print("\nПрограмма: не удалось создать файл, вакансии не добавлены, попробуйте ещё раз\n")
+                        print("\nПрограмма: не удалось создать файл, вакансии не добавлены, попробуйте ещё раз")
 
                 if user_input_1 == '2':  # открыть существующий файл и записать новые данные поверх старых
                     open_file_object = create_open_file_object()
                     if open_file_object is None:  # файл открыть не получилось, так как в папке data нет файлов
-                        print("\nПрограмма: не удалось открыть файл, вакансии не добавлены, попробуйте ещё раз\n")
+                        print("\nПрограмма: не удалось открыть файл, вакансии не добавлены, попробуйте ещё раз")
                     else:
                         new_file_object = open_file_object
                         new_file_object.rewrite_vacancy(new_vacancies)
-                        print("\nПрограмма: новые вакансии успешно добавлены в файл поверх старых\n")
+                        print("\nПрограмма: новые вакансии успешно добавлены в файл поверх старых")
 
                 if user_input_1 == '3':  # открыть существующий файл и дописать новые данные
                     open_file_object = create_open_file_object()
                     if open_file_object is None:  # файл открыть не получилось, так как в папке data нет файлов
-                        print("\nПрограмма: не удалось открыть файл, вакансии не добавлены, попробуйте ещё раз\n")
+                        print("\nПрограмма: не удалось открыть файл, вакансии не добавлены, попробуйте ещё раз")
                     else:
                         new_file_object = open_file_object
                         new_file_object.add_vacancies(new_vacancies)
-                        print("\nПрограмма: новые вакансии успешно добавлены в файл\n")
+                        print("\nПрограмма: новые вакансии успешно добавлены в файл")
 
         if user_input == '2':  # Загрузить данные о вакансиях из файла
             open_file_object = create_open_file_object()
             if open_file_object is None:  # файл открыть не получилось, так как в папке data нет файлов
-                print("\nПрограмма: не удалось открыть файл, вакансии не добавлены, попробуйте ещё раз\n")
+                print("\nПрограмма: не удалось открыть файл, вакансии не добавлены, попробуйте ещё раз")
             else:
                 new_file_object = open_file_object
                 #  Считываем вакансии из файла, как список словарей и преобразуем в список объектов
                 new_vacancies = Vacancy.cast_vacancies_to_object_list(new_file_object.read_vacancies())
-                print("\nПрограмма: вакансии успешно считаны из файла\n")
+                print("\nПрограмма: вакансии успешно считаны из файла")
 
         if user_input == '3':  # Вернуться в главное меню
             file_quit_flag = True
@@ -270,8 +274,9 @@ def user_interaction():
     # platforms = ["HeadHunter"]
     search_query = input("Программа: Введите ключевое слово для поиска вакансий. \n\nПользователь: ")
     print("\nПрограмма: подождите, идёт сбор данных...")
+    #  при получении пустого ответа - ошибка возникает!!!
     hh_api.get_vacancies(search_query)
-    vacancies = Vacancy.cast_vacancies_to_object_list(hh_api.vacancies)
+    vacancies = Vacancy.cast_hh_vacancies_to_object_list(hh_api.vacancies)
     primary_vacancies = vacancies
     print("\nДанные с www.hh.ru успешно получены")
 
@@ -313,7 +318,7 @@ def user_interaction():
             search_query = input("\nПрограмма: Введите ключевое слово для поиска вакансий. \n\nПользователь: ")
             print("\nПрограмма: подождите, идёт сбор данных...")
             hh_api.get_vacancies(search_query)
-            vacancies = Vacancy.cast_vacancies_to_object_list(hh_api.vacancies)
+            vacancies = Vacancy.cast_hh_vacancies_to_object_list(hh_api.vacancies)
             print("\nДанные с www.hh.ru успешно получены")
 
         if user_input == '8':  # Ещё раз показать главное меню

@@ -60,7 +60,7 @@ class Vacancy:
         return self_salary < other_salary
 
     @classmethod
-    def cast_vacancies_to_object_list(cls, dict_vacancies_list: list[dict]) -> list:
+    def cast_hh_vacancies_to_object_list(cls, dict_vacancies_list: list[dict]) -> list:
         """Преобразование набора данных из JSON ответа в список объектов"""
         instances = []
         for vacancy in dict_vacancies_list:
@@ -80,6 +80,21 @@ class Vacancy:
                 else:
                     salary_to = vacancy['salary']['to']
             description = vacancy['snippet']['requirement']
+            #  Создаём объект Вакансия
+            instance = cls(name, link, salary_from, salary_to, description)
+            instances.append(instance)
+        return instances
+
+    @classmethod
+    def cast_vacancies_to_object_list(cls, dict_vacancies_list: list[dict]) -> list:
+        """Преобразование набора данных из сокращённого JSON представления вакансий в список объектов"""
+        instances = []
+        for vacancy in dict_vacancies_list:
+            name = vacancy['vacancy_name']
+            link = vacancy['vacancy_link']
+            salary_from = vacancy['salary_from']
+            salary_to = vacancy['salary_to']
+            description = vacancy['vacancy_description']
             #  Создаём объект Вакансия
             instance = cls(name, link, salary_from, salary_to, description)
             instances.append(instance)

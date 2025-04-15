@@ -38,13 +38,13 @@ class JSONSaver(BaseFileHandler):
             vacancies.remove(dict_vacancy)
 
         with open(self.__file_name, 'w', encoding='utf-8') as file:
-            json.dump(vacancies, file)
+            json.dump(vacancies, file, ensure_ascii=False, indent=4)
 
     def rewrite_vacancy(self, new_vacancies: list[Vacancy]):
         """Перезаписывает вакансии в файл - старые стирает"""
         new_vacancies_dict_list = [vac.vacancy_to_dict() for vac in new_vacancies]
         with open(self.__file_name, 'w', encoding='utf-8') as file:
-            json.dump(new_vacancies_dict_list, file)
+            json.dump(new_vacancies_dict_list, file, ensure_ascii=False, indent=4)
 
     def add_vacancy(self, new_vacancy):
         """Добавляем новую вакансию в файл, но только в том случае, если её там нет"""
@@ -58,7 +58,7 @@ class JSONSaver(BaseFileHandler):
         old_vacancies.append(new_vacancy_data)
 
         with open(self.__file_name, 'a', encoding='utf-8') as file:
-            json.dump(old_vacancies, file)
+            json.dump(old_vacancies, file, ensure_ascii=False, indent=4)
 
     def add_vacancies(self, new_vacancies_list: list[Vacancy]):
         """Добавляем в файл новые вакансии, только те, которых в файле нет - без дублей"""
@@ -72,7 +72,7 @@ class JSONSaver(BaseFileHandler):
                 old_vacancies.append(new_vac)
 
         with open(self.__file_name, 'a', encoding='utf-8') as file:
-            json.dump(old_vacancies, file)
+            json.dump(old_vacancies, file, ensure_ascii=False, indent=4)
 
     def select_from_vacancies(self, salary_range, filter_words) -> list[dict]:
         """
