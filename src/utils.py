@@ -17,9 +17,11 @@ def get_vacancies_by_salary(vacancies: list[Vacancy], salary_range: tuple) -> li
     если хотя бы одно из них попадает в диапазон зарплат, указанный в вакансии от и до,
     то вакансия попадает в выдачу
     """
-    filtered_vacancies = [vac for vac in vacancies
-                          if any(amount in range(vac.salary_to, vac.salary_from + 1)
-                                 for amount in salary_range)]
+    filtered_vacancies = [vac for vac in vacancies if (vac.salary_from >= salary_range[0] and vac.salary_to == 0 and
+                                                       vac.salary_from <= salary_range[1 ]) or
+                          (vac.salary_from >= salary_range[0] and vac.salary_to <= salary_range[1])]
+                          # any(amount in range(vac.salary_to, vac.salary_from + 1)
+                          #        for amount in salary_range)]
     return filtered_vacancies
 
 

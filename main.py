@@ -90,7 +90,7 @@ def foolproof_user_top_amount_input(n_max: int) -> int:
     return user_answer
 
 
-def create_new_file_object(old_file_object=None) -> JSONSaver:
+def create_new_file_object(old_file_object=None) -> tuple:
     """
     Функция инициирует создание нового файлового объекта класса JSONSaver
     запрашивает у пользователя имя нового файла предлагает варианты
@@ -102,6 +102,7 @@ def create_new_file_object(old_file_object=None) -> JSONSaver:
     year = today.year
 
     new_file_object = old_file_object
+    file_mode = None
     quit_flag = False
 
     while not quit_flag:
@@ -127,13 +128,18 @@ def create_new_file_object(old_file_object=None) -> JSONSaver:
             user_answer = foolproof_user_menu_input(list('0123'))
             if user_answer == '0':  # новый файловый объект не создаётся, возвращаемся в меню файл
                 quit_flag = True
+            elif user_answer == '2':  # открываем файл для перезаписи
+                file_mode = 'rewrite'
+            elif user_answer == '3':  # дописать новые данные
+                file_mode = 'append'
         except FileNotFoundError:  # файла с таким именем нет, создаём и выходим
             with open(new_file_name, 'w', encoding='utf-8'):
                 pass
             new_file_object = JSONSaver(new_file_name)
+            file_mode = 'new'
             quit_flag = True
 
-    return new_file_object
+    return new_file_object, file_mode
 
 
 def create_open_file_object() -> Any:
@@ -141,6 +147,7 @@ def create_open_file_object() -> Any:
     Функция делает попытку открыть существующий файл и создать связанный с ним объект класса JSONSaver
     выводит список существующих файлов
     если существующих файлов нет, то возвращает None
+    в случае успеха - вернёт новый файловый объект
     """
     # Получаем список файлов и папок в текущей директории
     files = os.listdir(PATH_TO_DATA_DIR)
@@ -179,6 +186,7 @@ def file_user_menu(vacancies: list[Vacancy], file_object: JSONSaver = None) -> t
     file_quit_flag = False
 
     while not file_quit_flag:
+        print(f"\nПрограмма: В настоящий момент в списке {len(new_vacancies)} вакансий.")
         user_file_menu_out()
         user_input = foolproof_user_menu_input(list('123'))
 
@@ -192,24 +200,48 @@ def file_user_menu(vacancies: list[Vacancy], file_object: JSONSaver = None) -> t
                           "0 - вернуться в файловое меню\n"
                           "1 - записать данные в новый файл\n"
                           "2 - записать новые данные поверх старых\n"
-                          "3 - дописать новые данные")
-                    user_input_1 = foolproof_user_menu_input(list('0123'))
+                          "3 - дописать новые данные\n"
+                          "4 - открыть существующий файл и записать новые данные поверх старых\n"
+                          "5 - открыть существующий файл и дописать новые данные")
+                    user_input_1 = foolproof_user_menu_input(list('012345'))
 
                     if user_input_1 == '1':  # записать данные в новый файл
-                        create_file_object = create_new_file_object(new_file_object)
-
-                        if create_file_object != new_file_object:
-                            new_file_object = create_file_object
-                            new_file_object.rewrite_vacancy(new_vacancies)
-                            print("\nПрограмма: новые вакансии успешно добавлены в новый файл")
+                        next_file_object, file_mode = create_new_file_object(new_file_object)
+                        if next_file_object != new_file_object:
+                            new_file_object = next_file_object
+                            if file_mode in ('new', 'rewrite'):
+                                new_file_object.rewrite_vacancy(new_vacancies)
+                                if file_mode == 'new':
+                                    print("\nПрограмма: новые вакансии успешно добавлены в новый файл")
+                                else:
+                                    print("\nПрограмма: новые вакансии перезаписаны в файл поверх старых")
+                            elif file_mode == 'append':
+                                new_file_object.add_vacancies(new_vacancies)
+                                print("\nПрограмма: новые вакансии успешно добавлены в файл")
                         else:
                             print("\nПрограмма: вакансии не добавлены в файл, попробуйте ещё раз")
                     elif user_input_1 == '2':  # записать новые данные поверх старых
                         new_file_object.rewrite_vacancy(new_vacancies)
-                        print("\nПрограмма: новые вакансии успешно добавлены в файл поверх старых")
+                        print("\nПрограмма: новые вакансии успешно записаны в файл поверх старых")
                     elif user_input_1 == '3':  # дописать новые данные
                         new_file_object.add_vacancies(new_vacancies)
                         print("\nПрограмма: новые вакансии успешно добавлены в файл")
+                    elif user_input_1 == '4':  # открыть существующий файл и записать новые данные поверх старых
+                        new_file_object = create_open_file_object()
+                        if new_file_object is not None:
+                            new_file_object.rewrite_vacancy(new_vacancies)
+                            print("\nПрограмма: новые вакансии успешно записаны в файл поверх старых")
+                        else:
+                            print("\nПрограмма: не удалось открыть файл, "
+                                  "вакансии не были добавлены, попробуйте ещё раз")
+                    elif user_input_1 == '5':  # открыть существующий файл и дописать новые данные
+                        new_file_object = create_open_file_object()
+                        if new_file_object is not None:
+                            new_file_object.add_vacancies(new_vacancies)
+                            print("\nПрограмма: новые вакансии успешно добавлены в файл")
+                        else:
+                            print("\nПрограмма: не удалось открыть файл, "
+                                  "вакансии не были добавлены, попробуйте ещё раз")
 
             else:  # если файл ещё не открыт, то надо открыть существующий или создать новый
                 print("\nПрограмма: в настоящий момент нет открытого файла. Что вы хотите:\n\n"
@@ -220,14 +252,20 @@ def file_user_menu(vacancies: list[Vacancy], file_object: JSONSaver = None) -> t
                 user_input_1 = foolproof_user_menu_input(list('0123'))
 
                 if user_input_1 == '1':  # создать новый файл
-                    create_file_object = create_new_file_object()
-
+                    create_file_object, file_mode = create_new_file_object()
                     if create_file_object is not None:
                         new_file_object = create_file_object
-                        new_file_object.rewrite_vacancy(new_vacancies)
-                        print("\nПрограмма: новые вакансии успешно добавлены в новый файл")
+                        if file_mode in ('new', 'rewrite'):
+                            new_file_object.rewrite_vacancy(new_vacancies)
+                            if file_mode == 'new':
+                                print("\nПрограмма: новые вакансии успешно добавлены в новый файл")
+                            else:
+                                print("\nПрограмма: новые вакансии перезаписаны в файл поверх старых")
+                        elif file_mode == 'append':
+                            new_file_object.add_vacancies(new_vacancies)
+                            print("\nПрограмма: новые вакансии успешно добавлены в файл")
                     else:
-                        print("\nПрограмма: не удалось создать файл, вакансии не добавлены, попробуйте ещё раз")
+                        print("\nПрограмма: не удалось создать файл, вакансии не были добавлены, попробуйте ещё раз")
 
                 if user_input_1 == '2':  # открыть существующий файл и записать новые данные поверх старых
                     open_file_object = create_open_file_object()
@@ -273,12 +311,15 @@ def user_interaction():
 
     # platforms = ["HeadHunter"]
     search_query = input("Программа: Введите ключевое слово для поиска вакансий. \n\nПользователь: ")
-    print("\nПрограмма: подождите, идёт сбор данных...")
+    print("\nПрограмма: подождите, идёт сбор данных c www.hh.ru...")
     #  при получении пустого ответа - ошибка возникает!!!
     hh_api.get_vacancies(search_query)
-    vacancies = Vacancy.cast_hh_vacancies_to_object_list(hh_api.vacancies)
+    if hh_api.vacancies:
+        vacancies = Vacancy.cast_hh_vacancies_to_object_list(hh_api.vacancies)
+    else:
+        vacancies = []
     primary_vacancies = vacancies
-    print("\nДанные с www.hh.ru успешно получены")
+    print("\nДанные успешно получены")
 
     quit_flag = False
     while not quit_flag:
@@ -316,10 +357,10 @@ def user_interaction():
         if user_input == '7':  # Новый поиск
             hh_api.erase_old_vacancies()
             search_query = input("\nПрограмма: Введите ключевое слово для поиска вакансий. \n\nПользователь: ")
-            print("\nПрограмма: подождите, идёт сбор данных...")
+            print("\nПрограмма: подождите, идёт сбор данных c www.hh.ru...")
             hh_api.get_vacancies(search_query)
             vacancies = Vacancy.cast_hh_vacancies_to_object_list(hh_api.vacancies)
-            print("\nДанные с www.hh.ru успешно получены")
+            print("\nДанные успешно получены")
 
         if user_input == '8':  # Ещё раз показать главное меню
             user_menu_out()
