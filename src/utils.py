@@ -10,6 +10,16 @@ def filter_vacancies_by_words(vacancies: list[Vacancy], filter_words: list[str])
     return filtered_vacancies
 
 
+def is_salary_in_search_range(salary_range: tuple, vac_salary_from: int, vac_salary_to: int) -> bool:
+    """Возвращает True, если диапазон зарплат вакансии соответствует поисковому диапазону"""
+    if not vac_salary_to:
+        return vac_salary_from >= salary_range[0] and vac_salary_from <= salary_range[1]
+    elif not vac_salary_from:
+        return salary_range[0] <= vac_salary_to <= salary_range[1]
+    elif vac_salary_from and vac_salary_to:
+        return salary_range[0] <= vac_salary_from and vac_salary_to <= salary_range[1]
+
+
 def get_vacancies_by_salary(vacancies: list[Vacancy], salary_range: tuple) -> list[Vacancy]:
     """
     Фильтрует вакансии по зарплатам
@@ -17,11 +27,8 @@ def get_vacancies_by_salary(vacancies: list[Vacancy], salary_range: tuple) -> li
     если хотя бы одно из них попадает в диапазон зарплат, указанный в вакансии от и до,
     то вакансия попадает в выдачу
     """
-    filtered_vacancies = [vac for vac in vacancies if (vac.salary_from >= salary_range[0] and vac.salary_to == 0 and
-                                                       vac.salary_from <= salary_range[1 ]) or
-                          (vac.salary_from >= salary_range[0] and vac.salary_to <= salary_range[1])]
-                          # any(amount in range(vac.salary_to, vac.salary_from + 1)
-                          #        for amount in salary_range)]
+    filtered_vacancies = [vac for vac in vacancies
+                          if is_salary_in_search_range(salary_range, vac.salary_from, vac.salary_to)]
     return filtered_vacancies
 
 

@@ -173,6 +173,8 @@ def create_open_file_object() -> Any:
 def file_user_menu(vacancies: list[Vacancy], file_object: JSONSaver = None) -> tuple:
     """
     Функция обеспечивает исполнение файлового меню пользователя
+    в случае открытия нового файла возвращает новый файловый объект, новый список вакансий и флаг изменения
+    первичного (нефильтрованного) списка вакансий
     Здесь пользователь может:
     1 - Записать текущие данные в файл
     (если в настоящий момент файл не выбран, то программа предлагает открыть существующий файл - для добавления
@@ -183,6 +185,7 @@ def file_user_menu(vacancies: list[Vacancy], file_object: JSONSaver = None) -> t
     """
     new_vacancies = vacancies
     new_file_object = file_object
+    is_primary_vacancies_update = False
     file_quit_flag = False
 
     while not file_quit_flag:
@@ -201,8 +204,8 @@ def file_user_menu(vacancies: list[Vacancy], file_object: JSONSaver = None) -> t
                           "1 - записать данные в новый файл\n"
                           "2 - записать новые данные поверх старых\n"
                           "3 - дописать новые данные\n"
-                          "4 - открыть существующий файл и записать новые данные поверх старых\n"
-                          "5 - открыть существующий файл и дописать новые данные")
+                          "4 - открыть другой файл и записать новые данные поверх старых\n"
+                          "5 - открыть другой файл и дописать новые данные")
                     user_input_1 = foolproof_user_menu_input(list('012345'))
 
                     if user_input_1 == '1':  # записать данные в новый файл
@@ -226,6 +229,8 @@ def file_user_menu(vacancies: list[Vacancy], file_object: JSONSaver = None) -> t
                     elif user_input_1 == '3':  # дописать новые данные
                         new_file_object.add_vacancies(new_vacancies)
                         print("\nПрограмма: новые вакансии успешно добавлены в файл")
+                        new_vacancies = Vacancy.cast_vacancies_to_object_list(new_file_object.read_vacancies())
+                        new_vacancies = sort_vacancies_by_salary_decrease(new_vacancies)
                     elif user_input_1 == '4':  # открыть существующий файл и записать новые данные поверх старых
                         new_file_object = create_open_file_object()
                         if new_file_object is not None:
@@ -238,6 +243,8 @@ def file_user_menu(vacancies: list[Vacancy], file_object: JSONSaver = None) -> t
                         new_file_object = create_open_file_object()
                         if new_file_object is not None:
                             new_file_object.add_vacancies(new_vacancies)
+                            new_vacancies = Vacancy.cast_vacancies_to_object_list(new_file_object.read_vacancies())
+                            new_vacancies = sort_vacancies_by_salary_decrease(new_vacancies)
                             print("\nПрограмма: новые вакансии успешно добавлены в файл")
                         else:
                             print("\nПрограмма: не удалось открыть файл, "
@@ -283,9 +290,13 @@ def file_user_menu(vacancies: list[Vacancy], file_object: JSONSaver = None) -> t
                     else:
                         new_file_object = open_file_object
                         new_file_object.add_vacancies(new_vacancies)
+                        new_vacancies = Vacancy.cast_vacancies_to_object_list(new_file_object.read_vacancies())
+                        new_vacancies = sort_vacancies_by_salary_decrease(new_vacancies)
                         print("\nПрограмма: новые вакансии успешно добавлены в файл")
 
         if user_input == '2':  # Загрузить данные о вакансиях из файла
+            print("\nПрограмма: внимание, при успешном открытии и чтении файла, "
+                  "первичные данные поиска будут больше не доступны!")
             open_file_object = create_open_file_object()
             if open_file_object is None:  # файл открыть не получилось, так как в папке data нет файлов
                 print("\nПрограмма: не удалось открыть файл, вакансии не добавлены, попробуйте ещё раз")
@@ -293,12 +304,13 @@ def file_user_menu(vacancies: list[Vacancy], file_object: JSONSaver = None) -> t
                 new_file_object = open_file_object
                 #  Считываем вакансии из файла, как список словарей и преобразуем в список объектов
                 new_vacancies = Vacancy.cast_vacancies_to_object_list(new_file_object.read_vacancies())
+                is_primary_vacancies_update = True
                 print("\nПрограмма: вакансии успешно считаны из файла")
 
         if user_input == '3':  # Вернуться в главное меню
             file_quit_flag = True
 
-    return new_vacancies, new_file_object
+    return new_vacancies, new_file_object, is_primary_vacancies_update
 
 
 def user_interaction():
@@ -348,8 +360,9 @@ def user_interaction():
             print_vacancies(vacancies)
 
         if user_input == '5':  # Действия с файлом
-            vacancies, file_object = file_user_menu(vacancies, file_object)
-            primary_vacancies = vacancies
+            vacancies, file_object, is_primary_vacancies_update = file_user_menu(vacancies, file_object)
+            if is_primary_vacancies_update:
+                primary_vacancies = vacancies
 
         if user_input == '6':  # Сбросить все фильтры
             vacancies = primary_vacancies

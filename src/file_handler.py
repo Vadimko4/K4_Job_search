@@ -65,13 +65,15 @@ class JSONSaver(BaseFileHandler):
         #  переводим список объектов-вакансий в список словарей
         new_vacancies_dict_list = [vac.vacancy_to_dict() for vac in new_vacancies_list]
 
+        #  Читаем вакансии,  которые уже есть в файле
         old_vacancies = self.read_vacancies()
 
+        #  Добавляем в итоговый список только те, которых не было - новые уникальные
         for new_vac in new_vacancies_dict_list:
             if all(new_vac['vacancy_link'] != old_vac['vacancy_link'] for old_vac in old_vacancies):
                 old_vacancies.append(new_vac)
-
-        with open(self.__file_name, 'a', encoding='utf-8') as file:
+        #  Перезаписываем дополненные данные вместо старых
+        with open(self.__file_name, 'w', encoding='utf-8') as file:
             json.dump(old_vacancies, file, ensure_ascii=False, indent=4)
 
     def select_from_vacancies(self, salary_range, filter_words) -> list[dict]:
