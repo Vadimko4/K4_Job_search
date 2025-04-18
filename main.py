@@ -57,9 +57,10 @@ def foolproof_user_salary_input():
                 or user_answer.count('-') > 1 or user_answer[-1] == '-'):
             print("\nПрограмма: Неверный ввод. Попробуйте ещё раз")
         else:
+            user_answer = user_answer.strip()
             salary = user_answer.split('-')
             if user_answer[0] == '-':
-                salary_to = int(salary[0])
+                salary_to = int(salary[1])
                 salary_from = 0
             elif len(salary) == 2:
                 salary_from, salary_to = map(int, salary)
