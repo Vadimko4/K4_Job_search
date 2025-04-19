@@ -109,11 +109,3 @@ class Vacancy:
         vacancy_dict['vacancy_description'] = self.vacancy_description
         vacancy_dict['vacancy_link'] = self.vacancy_link
         return vacancy_dict
-
-    # def __gt__(self, other):
-    #     """метод определяет больше self, чем other или нет"""
-    #     pass
-    #
-    # def __eq__(self, other):
-    #     """метод определяет равны ли self и other между собой"""
-    #     pass
