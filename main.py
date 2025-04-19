@@ -2,7 +2,7 @@ import os
 from typing import Any
 import datetime
 from src.file_handler import JSONSaver, DEFAULT_VACANCY_JSON_FILE_NAME, PATH_TO_DATA_DIR
-from src.hh_handler import HhHandler
+from src.hh_handler import HhHandler, NotFoundError, ServerError
 from src.vacancy import Vacancy
 from src.utils import (print_vacancies, get_vacancies_by_salary, sort_vacancies_by_salary_decrease,
                        filter_vacancies_by_words, get_top_vacancies)
@@ -326,7 +326,12 @@ def user_interaction():
     search_query = input("Программа: Введите ключевое слово для поиска вакансий. \n\nПользователь: ")
     print("\nПрограмма: подождите, идёт сбор данных c www.hh.ru...")
     #  при получении пустого ответа - ошибка возникает!!!
-    hh_api.get_vacancies(search_query)
+    try:
+        hh_api.get_vacancies(search_query)
+    except NotFoundError:
+        print("\nПрограмма: Запрос содержит ошибку или неверные данные, вакансии не были получены")
+    except ServerError:
+        print("\nПрограмма: На стороне сервера произошла ошибка при обработке запроса, вакансии не были получены")
     if hh_api.vacancies:
         vacancies = Vacancy.cast_hh_vacancies_to_object_list(hh_api.vacancies)
     else:

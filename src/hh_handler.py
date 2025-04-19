@@ -5,6 +5,18 @@ import requests
 from src.base_classes import BaseHhHandler
 
 
+class ApiError(Exception):
+    pass
+
+
+class NotFoundError(ApiError):
+    pass
+
+
+class ServerError(ApiError):
+    pass
+
+
 class HhHandler(BaseHhHandler):
     """
     Класс для работы с API HeadHunter
@@ -23,15 +35,15 @@ class HhHandler(BaseHhHandler):
         self.params['text'] = search_query
         while self.params.get('page') != 20:
             response = requests.get(self.url, headers=self.headers, params=self.params)
-            status_code = response.status_code #  дописать проверку статус кода
+            status_code = response.status_code
             if 300 > status_code >= 200:
                 vacancies = response.json()['items']
                 self.vacancies.extend(vacancies)
                 self.params['page'] += 1
             elif 500 > status_code >= 400:
-                print("\nПрограмма: запрос содержит ошибку или неверные данные")
+                raise NotFoundError("Запрос содержит ошибку или неверные данные")
             elif 600 > status_code >= 500:
-                print("\nПрограмма: на стороне сервера произошла ошибка при обработке запроса")
+                raise ServerError("На стороне сервера произошла ошибка при обработке запроса")
 
     def erase_old_vacancies(self):
         """Стирает ранее найденные вакансии для нового поиска"""

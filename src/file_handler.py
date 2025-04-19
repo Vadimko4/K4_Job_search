@@ -90,8 +90,8 @@ class JSONSaver(BaseFileHandler):
         return selected_vacancies
 
 
-if __name__ == '__main__':
-    a = JSONSaver()
-    print(a)
-    b = a
-    print(b, a)
+# if __name__ == '__main__':
+#     a = JSONSaver()
+#     print(a)
+#     b = a
+#     print(b, a)
