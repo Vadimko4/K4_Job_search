@@ -1,6 +1,12 @@
 import pytest
 
 from src.vacancy import Vacancy
+from src.hh_handler import HhHandler
+
+
+@pytest.fixture()
+def test_hh_handler_object():
+    return HhHandler()
 
 
 @pytest.fixture()
