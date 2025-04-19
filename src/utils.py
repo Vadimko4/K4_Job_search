@@ -53,3 +53,44 @@ def print_vacancies(vacancies: list[Vacancy]) -> None:
             user_input = input("<q> - возврат в главное меню, остальное - продолжить вывод: ").lower()
             if user_input == 'q':
                 return
+
+
+# if __name__  == "__main__":
+#     vac1 = Vacancy(
+#         vacancy_name="Senior Продуктовый аналитик",
+#         salary_from=0,
+#         salary_to=550000,
+#         vacancy_description="Будет плюсом, если хорошо знаешь <highlighttext>Python</highlighttext>
+#         и Jupyter Notebook,"
+#                             " знаком с ML, или имеешь опыт в роли инженера данных и...",
+#         vacancy_link="https://hh.ru/vacancy/118511005"
+#     )
+#     vac2 = Vacancy(
+#         vacancy_name="Системный администратор",
+#         salary_from=0,
+#         salary_to=530000,
+#         vacancy_description="Qemu KVM. Web сервер(LAMP). Nextcloud. Mysql-Maria BD. Маршрутизация. Bash. SAMBA. "
+#                             "Lets Encrypt.",
+#         vacancy_link="https://hh.ru/vacancy/118268364"
+#     )
+#     vac3 = Vacancy(
+#         vacancy_name="Lead QA",
+#         salary_from=400000,
+#         salary_to=500000,
+#         vacancy_description="Опыт автоматизированного и нагрузочного тестирования (Selenium, JMeter, Postman) и "
+#                             "работы с языками программирования
+#                             (<highlighttext>Python</highlighttext>/Java/JavaScript)."
+#                             " Работа с CI/CD...",
+#         vacancy_link="https://hh.ru/vacancy/119356360"
+#     )
+#     vac4 = Vacancy(
+#         vacancy_name="Ведущий backend разработчик-исследователь в Мастерскую стартапов",
+#         salary_from=300000,
+#         salary_to=0,
+#         vacancy_description="описание не указано",
+#         vacancy_link="https://hh.ru/vacancy/119356360"
+#     )
+#     obj_vacancies = [vac1, vac2, vac3, vac4]
+#     sorted_vac = sort_vacancies_by_salary_decrease(obj_vacancies)
+#     for i in sorted_vac:
+#         print (i.vacancy_name)

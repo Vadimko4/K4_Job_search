@@ -2,6 +2,12 @@ import pytest
 
 from src.vacancy import Vacancy
 
+
+@pytest.fixture()
+def test_obj_vacancy_list(first_test_vacancy, second_test_vacancy,  third_test_vacancy, fourth_test_vacancy):
+    return [first_test_vacancy, second_test_vacancy, third_test_vacancy, fourth_test_vacancy]
+
+
 @pytest.fixture()
 def first_test_vacancy():
     return Vacancy(

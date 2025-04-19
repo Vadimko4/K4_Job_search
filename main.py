@@ -69,7 +69,7 @@ def foolproof_user_salary_input():
                     continue
             else:
                 salary_from = int(salary[0])
-                salary_to = 10 ** 8
+                salary_to = 10 ** 10
             break
     return salary_from, salary_to
 
