@@ -13,7 +13,11 @@ class JSONSaver(BaseFileHandler):
     """Класс для работы с файлами вакансий - считывания, записи"""
 
     def __init__(self, file_name=DEFAULT_VACANCY_JSON_FILE_NAME):
-        """Конструктор"""
+        """
+        Конструктор
+        Если не передать имя файла, то используется имя файла по умолчанию vacancy.json
+        Все файлы хранятся в корне проекта в папке data
+        """
         self.__file_name = file_name
 
     def get_filename(self) -> str:
