@@ -1,8 +1,9 @@
 import pytest
 
-from src.vacancy import Vacancy
-from src.hh_handler import HhHandler
 from src.file_handler import JSONSaver
+from src.hh_handler import HhHandler
+from src.vacancy import Vacancy
+
 
 @pytest.fixture()
 def test_json_saver_object():
@@ -25,8 +26,8 @@ def first_test_vacancy():
         vacancy_name="Senior Продуктовый аналитик",
         salary_from=0,
         salary_to=550000,
-        vacancy_description="Будет плюсом, если хорошо знаешь <highlighttext>Python</highlighttext> и Jupyter Notebook,"
-                            " знаком с ML, или имеешь опыт в роли инженера данных и...",
+        vacancy_description="Будет плюсом, если хорошо знаешь <highlighttext>Python</highlighttext> и "
+                            "Jupyter Notebook, знаком с ML, или имеешь опыт в роли инженера данных и...",
         vacancy_link="https://hh.ru/vacancy/118511005"
     )
 
@@ -50,8 +51,8 @@ def third_test_vacancy():
         salary_from=400000,
         salary_to=500000,
         vacancy_description="Опыт автоматизированного и нагрузочного тестирования (Selenium, JMeter, Postman) и "
-                            "работы с языками программирования (<highlighttext>Python</highlighttext>/Java/JavaScript)."
-                            " Работа с CI/CD...",
+                            "работы с языками программирования (<highlighttext>Python</highlighttext>"
+                            "/Java/JavaScript). Работа с CI/CD...",
         vacancy_link="https://hh.ru/vacancy/119356360"
     )
 
@@ -87,10 +88,10 @@ def test_hh_json_answer():
             'Понимание принципов ООП и SOLID. "}},{"name":"Junior Python Developer",'
             '"alternate_url":"https://hh.ru/vacancy/118941947","salary":{"from":130000,"to":300000,"currency":"RUR",'
             '"gross":true},"snippet":{"requirement":"Знания \u003Chighlighttext\u003EPython\u003C/highlighttext\u003E '
-            'на базовом уровне. Опыт работы с фреймворками Flask или Django (будет плюсом). Опыт работы с реляционными '
-            'базами данных..."}},{"name":"Python-разработчик","alternate_url":"https://hh.ru/vacancy/119691755",'
-            '"salary":{"from":50000,"to":null,"currency":"RUR","gross":true},"snippet":'
-            '{"requirement":"Понимание концепции асинхронного программирования '
+            'на базовом уровне. Опыт работы с фреймворками Flask или Django (будет плюсом). Опыт работы с '
+            'реляционными базами данных..."}},{"name":"Python-разработчик","alternate_url":'
+            '"https://hh.ru/vacancy/119691755","salary":{"from":50000,"to":null,"currency":"RUR","gross":true},'
+            '"snippet":{"requirement":"Понимание концепции асинхронного программирования '
             'в \u003Chighlighttext\u003EPython\u003C/highlighttext\u003E. - Опыт работы с FastAPI, Pydantic, '
             'Pytest,\u003Chighlighttext\u003Epython\u003C/highlighttext\u003E-telegram-bot/aiogram, SQLAlchemy, '
             'alembic. - "}},{"name":"Junior+/Middle Backend Developer (Python, FastAPI, PostgreSQL)","alternate_url":'
@@ -99,5 +100,6 @@ def test_hh_json_answer():
             'Знание фреймворка FastAPI. Понимание принципов работы реляционных баз данных и владение SQL. "}},'
             '{"name":"Python разработчик", "alternate_url":"https://hh.ru/vacancy/119687981","salary":'
             '{"from":400,"to":1000,"currency":"USD","gross":false},"snippet":{"requirement":'
-            '"Знание языка \u003Chighlighttext\u003Epython\u003C/highlighttext\u003E. Знание хотя бы одного фреймворка '
-            'для backend разработки: django, flask, fastapi - обязательно. Знание архитектурных паттернов. "}}]')
+            '"Знание языка \u003Chighlighttext\u003Epython\u003C/highlighttext\u003E. Знание хотя бы одного '
+            'фреймворка для backend разработки: django, flask, fastapi - обязательно. '
+            'Знание архитектурных паттернов. "}}]')

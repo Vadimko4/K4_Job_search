@@ -1,7 +1,7 @@
 import pytest
 
-from src.utils import (filter_vacancies_by_words, is_salary_in_search_range, get_vacancies_by_salary,
-                       sort_vacancies_by_salary_decrease, get_top_vacancies)
+from src.utils import (filter_vacancies_by_words, get_top_vacancies, get_vacancies_by_salary,
+                       is_salary_in_search_range, sort_vacancies_by_salary_decrease)
 
 
 def test_filter_vacancies_by_words(test_obj_vacancy_list):
@@ -34,7 +34,7 @@ def test_get_vacancies_by_salary(test_obj_vacancy_list):
     assert len(filtered_vacancy) == 1
     assert filtered_vacancy[0].vacancy_name == "Ведущий backend разработчик-исследователь в Мастерскую стартапов"
     assert filtered_vacancy[0].salary_from == 300000
-    assert filtered_vacancy[0].salary_to ==0
+    assert filtered_vacancy[0].salary_to == 0
     assert filtered_vacancy[0].vacancy_description == "описание не указано"
     assert filtered_vacancy[0].vacancy_link == "https://hh.ru/vacancy/119356360"
 
@@ -53,6 +53,3 @@ def test_get_top_vacancies(test_obj_vacancy_list):
     assert top_vacancies[0].vacancy_name == "Senior Продуктовый аналитик"
     assert top_vacancies[1].vacancy_name == "Системный администратор"
     assert top_vacancies[2].vacancy_name == "Lead QA"
-
-
-

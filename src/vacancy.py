@@ -50,7 +50,7 @@ class Vacancy:
             self_salary = self.salary_to
         else:
             self_salary = self.salary_from
-        
+
         if other.salary_to and other.salary_from:  # определяем актуальную зарплату для other
             other_salary = (other.salary_to + other.salary_from) / 2
         elif other.salary_to:

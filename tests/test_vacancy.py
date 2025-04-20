@@ -1,4 +1,5 @@
 import json
+
 from src.vacancy import Vacancy
 
 
@@ -27,8 +28,8 @@ def test_vacancy_validate_description(second_test_vacancy, none_description_test
 
 
 def test_vacancy_str(second_test_vacancy, third_test_vacancy, fourth_test_vacancy):
-    assert str(second_test_vacancy) == (f"{'-' * 150}\nВакансия: Системный администратор \nЗарплата: до 530000 рублей\n"
-                                        f"Описание: Qemu KVM. Web сервер(LAMP). Nextcloud. Mysql-Maria BD. "
+    assert str(second_test_vacancy) == (f"{'-' * 150}\nВакансия: Системный администратор \nЗарплата: до 530000 рублей"
+                                        f"\nОписание: Qemu KVM. Web сервер(LAMP). Nextcloud. Mysql-Maria BD. "
                                         f"Маршрутизация. Bash. SAMBA. Lets Encrypt.\nСсылка на вакансию: "
                                         f"https://hh.ru/vacancy/118268364")
 

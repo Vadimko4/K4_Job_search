@@ -1,10 +1,9 @@
+import json
 from unittest.mock import patch
 
 import pytest
 
-import json
-
-from src.hh_handler import HhHandler, NotFoundError, ServerError
+from src.hh_handler import NotFoundError, ServerError
 
 
 def test_hh_handler_init(test_hh_handler_object):
