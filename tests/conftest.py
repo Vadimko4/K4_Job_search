@@ -2,6 +2,11 @@ import pytest
 
 from src.vacancy import Vacancy
 from src.hh_handler import HhHandler
+from src.file_handler import JSONSaver
+
+@pytest.fixture()
+def test_json_saver_object():
+    return JSONSaver()
 
 
 @pytest.fixture()

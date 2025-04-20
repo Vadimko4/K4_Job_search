@@ -16,12 +16,16 @@ class JSONSaver(BaseFileHandler):
         """Конструктор"""
         self.__file_name = file_name
 
-    def __eq__(self, other):
+    def get_filename(self) -> str:
+        """Возвращает имя файла (приватный атрибут)"""
+        return self.__file_name
+
+    def __eq__(self, other) -> bool:
         """Метод определяет равны ли self и other между собой"""
         return self.__file_name == other.__file_name
 
     @property
-    def is_empty(self):
+    def is_empty(self) -> bool:
         """Возвращает - пустой ли файл"""
         return os.path.getsize(self.__file_name) == 0
 
@@ -30,7 +34,7 @@ class JSONSaver(BaseFileHandler):
         with open(self.__file_name, encoding='utf-8') as file:
             return json.load(file)
 
-    def delete_vacancy(self, vacancy):
+    def delete_vacancy(self, vacancy: Vacancy):
         """Удаляем вакансию из файла, если она там есть"""
         dict_vacancy = vacancy.vacancy_to_dict()
         vacancies = self.read_vacancies()
@@ -46,7 +50,7 @@ class JSONSaver(BaseFileHandler):
         with open(self.__file_name, 'w', encoding='utf-8') as file:
             json.dump(new_vacancies_dict_list, file, ensure_ascii=False, indent=4)
 
-    def add_vacancy(self, new_vacancy):
+    def add_vacancy(self, new_vacancy: Vacancy):
         """Добавляем новую вакансию в файл, но только в том случае, если её там нет"""
         old_vacancies = self.read_vacancies()
         new_vacancy_data = new_vacancy.vacancy_to_dict()
@@ -76,7 +80,7 @@ class JSONSaver(BaseFileHandler):
         with open(self.__file_name, 'w', encoding='utf-8') as file:
             json.dump(old_vacancies, file, ensure_ascii=False, indent=4)
 
-    def select_from_vacancies(self, salary_range, filter_words) -> list[dict]:
+    def select_from_vacancies(self, salary_range: tuple, filter_words: list[str]) -> list[dict]:
         """
         Делает выборку вакансий из файла по указанному диапазону зарплаты (список из двух целых значений: от и до)
         и по указанным ключевым словам (список строк), которые должны присутствовать (хотя бы одно из них)
