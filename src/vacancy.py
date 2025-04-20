@@ -9,7 +9,8 @@ class Vacancy:
 
     __slots__ = ('vacancy_name', 'salary_from', 'salary_to', 'vacancy_description', 'vacancy_link')
 
-    def __init__(self, vacancy_name, vacancy_link, salary_from, salary_to, vacancy_description):
+    def __init__(self, vacancy_name: str, vacancy_link: str,
+                 salary_from: int, salary_to: int, vacancy_description: str):
         """Конструктор вакансии"""
         self.vacancy_name = vacancy_name
         self.vacancy_link = vacancy_link

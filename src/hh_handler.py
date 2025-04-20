@@ -30,7 +30,7 @@ class HhHandler(BaseHhHandler):
         self.vacancies = []
         # super().__init__(file_handler)
 
-    def get_vacancies(self, search_query):
+    def get_vacancies(self, search_query: str):
         """Получение вакансий, содержащих search_query, с hh.ru в формате JSON"""
         self.params['text'] = search_query
         while self.params.get('page') != 20:
