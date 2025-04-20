@@ -21,11 +21,11 @@ def test_get_vacancies_with_not_found_error(mock_get, test_hh_handler_object):
         test_hh_handler_object.get_vacancies('python')
 
 
-# @patch('requests.get')
-# def test_get_vacancies_with_servererror(mock_get, test_hh_handler_object):
-#     mock_get.return_value.status_code = 500
-#     with pytest.raises(ServerError):
-#         test_hh_handler_object.get_vacancies('python')
+@patch('requests.get')
+def test_get_vacancies_with_servererror(mock_get, test_hh_handler_object):
+    mock_get.return_value.status_code = 500
+    with pytest.raises(ServerError):
+        test_hh_handler_object.get_vacancies('python')
 
 
 @patch('requests.get')
@@ -51,3 +51,8 @@ def test_get_vacancies(mock_get, test_hh_handler_object):
             }
         ] * 2000
 
+
+def test_erase_old_vacancies(test_hh_handler_object, test_hh_json_answer):
+    test_hh_handler_object.vacancies = json.loads(test_hh_json_answer)
+    test_hh_handler_object.erase_old_vacancies()
+    assert len(test_hh_handler_object.vacancies) == 0
